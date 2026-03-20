@@ -1,0 +1,219 @@
+# Celium Dashboard — Cursor Agent Rules
+
+You are working on **Celium Dashboard**, a Next.js 14 web application for monitoring a custom LoRaWAN-based IoT mesh network called Celium. Read `PROJECT.md` and `ARCHITECTURE.md` before starting any task.
+
+---
+
+## Project Context
+
+- This is an **MVP prototype**. All data is mocked and seeded into Supabase. There is no live hardware connection yet.
+- No authentication is implemented. Do not add auth unless explicitly asked.
+- The codebase must be clean enough that a future developer (or AI agent) can onboard quickly. Prioritise readability over cleverness.
+
+---
+
+## Stack — Always Use These, Never Introduce Others Without Asking
+
+| Concern | Library |
+|---|---|
+| Framework | Next.js 14, App Router only (no Pages Router) |
+| Language | TypeScript — strict mode, no `any` |
+| Styling | Tailwind CSS utility classes only — no inline `style={}` |
+| UI primitives | shadcn/ui — import from `@/components/ui/` |
+| Charts | Recharts |
+| Map | react-leaflet |
+| Data fetching (client) | SWR |
+| Database | Supabase JS client from `@/lib/supabase.ts` |
+| Icons | lucide-react |
+
+Do **not** install: axios, lodash, moment, styled-components, emotion, Redux, Zustand, or any other state management library unless explicitly instructed.
+
+---
+
+## File & Folder Conventions
+
+- Pages live in `app/[route]/page.tsx`
+- API routes live in `app/api/[route]/route.ts`
+- Reusable domain components live in `components/dashboard/[domain]/ComponentName.tsx`
+- shadcn/ui base components live in `components/ui/` — do not modify these files
+- SWR hooks live in `hooks/use[Resource].ts`
+- Shared types live in `types/index.ts` — add new types here, never inline them
+- Utility functions live in `lib/utils.ts`
+- Constants (enums, status maps, colour maps) live in `lib/constants.ts`
+
+---
+
+## Component Rules
+
+1. **Every component file must have a JSDoc comment** at the top describing what it renders and what props it accepts.
+2. Use named exports for all components. Default exports only for Next.js page files (`page.tsx`, `layout.tsx`, `route.ts`).
+3. Mark client components explicitly: `'use client';` must be the very first line when needed. If a component does not use browser APIs, hooks, or event handlers, it should be a Server Component (no directive needed).
+4. Props interfaces must be defined in the same file, above the component, named `[ComponentName]Props`.
+5. Never fetch data inside a component directly. Use a hook (`hooks/`) or receive data as props from a Server Component.
+6. Keep components focused — if a file exceeds ~150 lines, consider splitting it.
+
+### Example Component Structure
+
+```tsx
+'use client';
+
+/**
+ * NodeStatusBadge
+ * Renders a colour-coded badge indicating the current status of a network node.
+ * @prop status — one of 'online' | 'offline' | 'warning' | 'unknown'
+ */
+
+import { Badge } from '@/components/ui/badge';
+import { NodeStatus } from '@/types';
+import { STATUS_COLOURS } from '@/lib/constants';
+
+interface NodeStatusBadgeProps {
+  status: NodeStatus;
+}
+
+export function NodeStatusBadge({ status }: NodeStatusBadgeProps) {
+  return (
+    <Badge className={STATUS_COLOURS[status]}>
+      {status}
+    </Badge>
+  );
+}
+```
+
+---
+
+##  
+1. Every API route must validate query parameters and return a typed JSON response.
+2. Use the Supabase server client imported from `@/lib/supabase.ts`.
+3. Always handle errors and return appropriate HTTP status codes.
+4. Keep API routes thin — no business logic, only DB queries and response shaping.
+
+### Example API Route Structure
+
+```ts
+// app/api/nodes/route.ts
+import { createClient } from '@/lib/supabase';
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('nodes')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json(data);
+}
+```
+
+---
+
+## Hook Rules
+
+1. Every SWR hook must be documented with a JSDoc comment.
+2. Always return `{ data, isLoading, error }` — expose the SWR states.
+3. Set `refreshInterval: 30000` (30 seconds) for overview, alerts, and node list hooks.
+
+### Example Hook Structure
+
+```ts
+/**
+ * useNodes
+ * Fetches the full list of network nodes from /api/nodes.
+ * Refreshes every 30 seconds.
+ */
+import useSWR from 'swr';
+import { Node } from '@/types';
+
+const fetcher = (url: string) => fetch(url).then(r => r.json());
+
+export function useNodes() {
+  const { data, isLoading, error } = useSWR<Node[]>('/api/nodes', fetcher, {
+    refreshInterval: 30000,
+  });
+  return { nodes: data ?? [], isLoading, error };
+}
+```
+
+---
+
+## TypeScript Rules
+
+- All types and interfaces are defined in `types/index.ts`. Import from there.
+- No `any`. Use `unknown` and narrow the type if needed.
+- Prefer `interface` over `type` for object shapes.
+- Use the enums and union types already defined: `NodeType`, `NodeStatus`, `AlertSeverity`.
+
+---
+
+## Styling Rules
+
+- Use Tailwind utility classes. No custom CSS unless adding a new global style to `styles/globals.css`.
+- The dashboard is **dark-themed**. The base surfaces are:
+  - Page background: `bg-brand-navy` (`#121D2A`)
+  - Elevated surface (cards, panels): `bg-zinc-900` or `bg-zinc-800`
+  - Border: `border-zinc-700`
+- **Always use the brand colour tokens** — never hardcode hex values in JSX. Use the classes below:
+
+| Need | Class |
+|---|---|
+| Primary action / active state | `bg-brand-blue` / `text-brand-blue` |
+| Accent / secondary | `bg-brand-cyan` / `text-brand-cyan` |
+| Hover / depth | `bg-brand-deep` |
+| Gradient background | `bg-brand-gradient` |
+
+- Status colours live in `lib/constants.ts` as a map keyed by `NodeStatus`. Never hardcode status colours.
+- Use `cn()` from `@/lib/utils` for conditional class merging.
+
+## Typography Rules
+
+- **Headings** (page titles, section titles, card titles): use `font-heading` (Poppins). Add `font-bold` or `font-semibold` as appropriate.
+- **Body and UI text** (descriptions, labels, table cells, badges): use `font-body` (Inter). Add `font-medium` for emphasis.
+- Never use a raw `<style>` tag to set fonts. Fonts are loaded via `next/font/google` in `app/layout.tsx` and applied via Tailwind — do not change this setup.
+- Do not use system fonts or import fonts from any CDN.
+
+## Logo & Branding Asset Rules
+
+- All logo SVGs live in `/public/logos/`. Import them as Next.js `<Image>` components or as inline SVG React components.
+- Choose the correct logo variant for the context:
+  - Expanded sidebar / onboarding → `logo-full.svg`
+  - Collapsed sidebar / favicon → `logo-icon.svg`
+  - On dark backgrounds (standard dashboard use) → `logo-light.svg`
+  - On light backgrounds → `logo-dark.svg`
+- **Never recolour a logo SVG inline** (no `fill=`, `stroke=`, or CSS colour overrides on logo elements). Use the correct file variant instead.
+- Never use a PNG or raster version of the logo.
+
+---
+
+## Database & Data Rules
+
+- Always use the Supabase JS client — never write raw `fetch` calls to the Supabase REST API directly.
+- Column names in Supabase are `snake_case`. Map them to `camelCase` in TypeScript types at the API layer.
+- The `raw_payload` JSONB column stores the full node transmission. Do not duplicate data from it into separate columns unless it appears in the dedicated columns defined in the schema.
+- The seed script lives in `scripts/seed.ts`. If you add a new table, add seed data for it there too.
+
+---
+
+## Documentation Rules
+
+- All files must have a top-of-file comment describing their purpose.
+- All exported functions and components must have a JSDoc comment.
+- Complex logic must have inline comments explaining the *why*, not the *what*.
+- When creating a new component, add it to the relevant section in `ARCHITECTURE.md`.
+
+---
+
+## What NOT to Do
+
+- Do not use the Next.js Pages Router. App Router only.
+- Do not use `getServerSideProps` or `getStaticProps` — these are Pages Router patterns.
+- Do not add authentication code unless explicitly asked.
+- Do not create new npm dependencies without asking first.
+- Do not put business logic in page files — extract it to hooks or utility functions.
+- Do not hardcode colours or status strings — use `lib/constants.ts`.
+- Do not modify files inside `components/ui/` — these are managed by the shadcn CLI.
+- Do not use `console.log` in committed code — use `console.error` only inside error handlers.
