@@ -73,7 +73,31 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
+@theme {
+  --color-brand-blue: #1784E3;
+  --color-brand-navy: #121D2A;
+  --color-brand-cyan: #5DD4D8;
+  --color-brand-deep: #1E3A8A;
+
+  --background-image-brand-gradient: linear-gradient(to right, #1784E3, #5DD4D8);
+
+  --font-family-heading: 'Poppins', sans-serif;
+  --font-family-body: 'Inter', sans-serif;
+}
+
 @theme inline {
+    /*  Custom branding setup */
+    --color-brand-blue: #1784E3;
+    --color-brand-navy: #121D2A;
+    --color-brand-cyan: #5DD4D8;
+    --color-brand-deep: #1E3A8A;
+
+    --background-image-brand-gradient: linear-gradient(to right, #1784E3, #5DD4D8);
+
+    --font-family-heading: 'Poppins', sans-serif;
+    --font-family-body: 'Inter', sans-serif;
+
+    /* Pre - generated */
     --font-sans: var(--font-sans);
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
