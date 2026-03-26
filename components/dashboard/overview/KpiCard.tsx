@@ -20,7 +20,7 @@ const STATE_STYLES: Record<
   green: { value: 'text-emerald-400', border: 'border-l-4 border-l-emerald-400' },
   amber: { value: 'text-amber-400', border: 'border-l-4 border-l-amber-400' },
   red: { value: 'text-red-400', border: 'border-l-4 border-l-red-400' },
-  neutral: { value: 'text-zinc-100', border: '' },
+  neutral: { value: 'text-foreground', border: '' },
 };
 
 interface KpiCardProps {
@@ -43,14 +43,16 @@ export function KpiCard({
   return (
     <div
       className={cn(
-        'rounded-lg border border-zinc-700 bg-zinc-900 p-4',
+        'rounded-lg border border-border bg-card p-4',
         styles.border,
         className,
       )}
     >
       <div className="flex items-center gap-2">
-        {icon && <span className="shrink-0 text-zinc-400 [&>svg]:size-4">{icon}</span>}
-        <span className="font-body text-sm font-medium text-zinc-400">{label}</span>
+        {icon && (
+          <span className="shrink-0 text-muted-foreground [&>svg]:size-4">{icon}</span>
+        )}
+        <span className="font-body text-sm font-medium text-muted-foreground">{label}</span>
       </div>
 
       <p className={cn('mt-1 font-heading text-3xl font-bold', styles.value)}>

@@ -41,14 +41,14 @@ export function NodeRow({ node, latestReading }: NodeRowProps) {
     <Link
       href={`/nodes/${node.id}`}
       className={cn(
-        'flex w-full items-center gap-6 border-b border-zinc-800 bg-zinc-900 px-4 py-3',
-        'transition-colors hover:bg-zinc-800',
+        'flex w-full items-center gap-6 border-b border-border bg-card px-4 py-3',
+        'transition-colors hover:bg-muted/80',
       )}
     >
       {/* Name + type short label */}
       <div className="min-w-[140px] flex-1">
-        <p className="font-body font-medium text-zinc-100">{node.name}</p>
-        <p className="font-body text-xs text-zinc-500">
+        <p className="font-body font-medium text-foreground">{node.name}</p>
+        <p className="font-body text-xs text-muted-foreground">
           {NODE_TYPE_SHORT[node.type]}
         </p>
       </div>
@@ -60,7 +60,7 @@ export function NodeRow({ node, latestReading }: NodeRowProps) {
 
       {/* Last seen (relative); suppressHydrationWarning: Date.now() differs between SSR and browser */}
       <div className="w-[100px] shrink-0">
-        <p className="font-body text-sm text-zinc-300" suppressHydrationWarning>
+        <p className="font-body text-sm text-muted-foreground" suppressHydrationWarning>
           {formatRelativeTime(node.lastSeenAt)}
         </p>
       </div>
@@ -68,12 +68,12 @@ export function NodeRow({ node, latestReading }: NodeRowProps) {
       {/* RSSI */}
       <div className="w-[90px] shrink-0">
         {rssi !== null ? (
-          <p className="font-body text-sm text-zinc-100">
+          <p className="font-body text-sm text-foreground">
             {rssi}{' '}
-            <span className="text-zinc-500">dBm</span>
+            <span className="text-muted-foreground">dBm</span>
           </p>
         ) : (
-          <p className="font-body text-sm text-zinc-500">—</p>
+          <p className="font-body text-sm text-muted-foreground">—</p>
         )}
       </div>
 
@@ -81,18 +81,18 @@ export function NodeRow({ node, latestReading }: NodeRowProps) {
       <div className="flex w-[120px] shrink-0 items-center gap-2">
         {batteryPct !== null && batteryPct !== undefined ? (
           <>
-            <div className="h-2 flex-1 overflow-hidden rounded-full bg-zinc-700">
+            <div className="bg-muted h-2 flex-1 overflow-hidden rounded-full">
               <div
                 className={cn('h-full rounded-full', getBatteryColour(batteryPct))}
                 style={{ width: `${Math.min(Math.max(batteryPct, 0), 100)}%` }}
               />
             </div>
-            <span className="font-body text-xs text-zinc-300">
+            <span className="font-body text-xs text-muted-foreground">
               {batteryPct}%
             </span>
           </>
         ) : (
-          <p className="font-body text-sm text-zinc-500">—</p>
+          <p className="font-body text-sm text-muted-foreground">—</p>
         )}
       </div>
     </Link>

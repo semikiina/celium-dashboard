@@ -42,14 +42,14 @@ export function RecentNodeActivity({
     .slice(0, 6);
 
   return (
-    <div className="rounded-xl border border-brand-blue/20 bg-brand-navy p-6">
+    <div className="bg-background rounded-xl border border-border p-6">
       <div className="flex items-center justify-between">
-        <h2 className="font-heading text-xl font-bold text-white">
+        <h2 className="font-heading text-xl font-bold text-foreground">
           Recent Node Activity
         </h2>
         <Link
           href="/nodes"
-          className="font-body text-sm text-brand-cyan transition-colors hover:text-brand-cyan/80"
+          className="font-body text-primary text-sm transition-colors hover:text-primary/80"
         >
           View all nodes &rarr;
         </Link>
@@ -66,10 +66,10 @@ export function RecentNodeActivity({
             <Link
               key={node.id}
               href={`/nodes/${node.id}`}
-              className="rounded-[10px] border border-brand-blue/10 bg-brand-dark p-4 transition-colors hover:border-brand-blue/30"
+              className="bg-muted rounded-[10px] border border-border/50 p-4 transition-colors hover:border-primary/30"
             >
               <div className="flex items-center justify-between">
-                <span className="font-body text-base font-medium text-white">
+                <span className="font-body text-base font-medium text-foreground">
                   {node.name}
                 </span>
                 <span
@@ -78,22 +78,22 @@ export function RecentNodeActivity({
                   {STATUS_LABEL[node.status]}
                 </span>
               </div>
-              <p className="mt-1 font-body text-xs text-zinc-500">
+              <p className="mt-1 font-body text-xs text-muted-foreground">
                 {externalId}
               </p>
               <div className="mt-3 flex items-center gap-4">
                 {batteryPct !== null && batteryPct !== undefined && (
                   <div className="flex items-center gap-1">
-                    <Battery className="size-3 text-zinc-500" />
-                    <span className="font-body text-xs text-zinc-500">
+                    <Battery className="size-3 text-muted-foreground" />
+                    <span className="font-body text-xs text-muted-foreground">
                       {batteryPct}%
                     </span>
                   </div>
                 )}
                 {rssi !== null && (
                   <div className="flex items-center gap-1">
-                    <Signal className="size-3 text-zinc-500" />
-                    <span className="font-body text-xs text-zinc-500">
+                    <Signal className="size-3 text-muted-foreground" />
+                    <span className="font-body text-xs text-muted-foreground">
                       {rssi} dBm
                     </span>
                   </div>

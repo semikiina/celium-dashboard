@@ -51,9 +51,9 @@ const TYPE_OPTIONS: { label: string; value: TypeFilterValue }[] = [
 ];
 
 const selectClass = cn(
-  'w-full appearance-none rounded-[10px] border border-brand-blue/20 bg-brand-dark',
-  'py-2.5 pl-4 pr-10 font-body text-sm text-zinc-100',
-  'focus:border-brand-blue focus:outline-none',
+  'w-full appearance-none rounded-[10px] border border-border bg-muted',
+  'py-2.5 pl-4 pr-10 font-body text-sm text-foreground',
+  'focus-visible:border-ring focus:outline-none',
 );
 
 export function NodeFilterBar({
@@ -67,24 +67,24 @@ export function NodeFilterBar({
   filteredCount,
 }: NodeFilterBarProps) {
   return (
-    <div className="rounded-[14px] border border-brand-blue/20 bg-brand-navy">
+    <div className="bg-background rounded-[14px] border border-border">
       <div className="flex gap-4 px-6 pt-6">
         {/* Search */}
         <div className="flex flex-1 flex-col gap-2">
-          <label className="font-body text-sm font-medium text-zinc-400">
+          <label className="font-body text-sm font-medium text-muted-foreground">
             Search
           </label>
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search by name or ID..."
               className={cn(
-                'w-full rounded-[10px] border border-brand-blue/20 bg-brand-dark',
-                'py-2.5 pl-10 pr-4 font-body text-sm text-zinc-100 placeholder:text-zinc-500',
-                'focus:border-brand-blue focus:outline-none',
+                'w-full rounded-[10px] border border-border bg-muted',
+                'py-2.5 pl-10 pr-4 font-body text-sm text-foreground placeholder:text-muted-foreground',
+                'focus-visible:border-ring focus:outline-none',
               )}
             />
           </div>
@@ -92,7 +92,7 @@ export function NodeFilterBar({
 
         {/* Status dropdown */}
         <div className="flex w-[178px] shrink-0 flex-col gap-2">
-          <label className="font-body text-sm font-medium text-zinc-400">
+          <label className="font-body text-sm font-medium text-muted-foreground">
             Status
           </label>
           <div className="relative">
@@ -109,13 +109,13 @@ export function NodeFilterBar({
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           </div>
         </div>
 
         {/* Type dropdown */}
         <div className="flex w-[178px] shrink-0 flex-col gap-2">
-          <label className="font-body text-sm font-medium text-zinc-400">
+          <label className="font-body text-sm font-medium text-muted-foreground">
             Type
           </label>
           <div className="relative">
@@ -132,14 +132,14 @@ export function NodeFilterBar({
                 </option>
               ))}
             </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           </div>
         </div>
       </div>
 
       {/* Summary line */}
-      <div className="mx-6 mt-4 border-t border-brand-blue/20 py-2.5">
-        <p className="font-body text-sm text-zinc-400">
+      <div className="border-border mx-6 mt-4 border-t py-2.5">
+        <p className="font-body text-sm text-muted-foreground">
           Showing {filteredCount} of {totalCount} nodes
         </p>
       </div>

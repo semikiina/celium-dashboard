@@ -5,7 +5,7 @@
  *   - Average signal strength (RSSI) as a gradient progress bar
  *   - Status breakdown counts (Active, Warning, Critical, Offline)
  *
- * Matches the Figma design with brand-navy background, gradient bars,
+ * Matches the Figma design with semantic background, gradient bars,
  * and colour-coded status counts.
  *
  * @prop avgBatteryPct   — average battery percentage across all nodes (0–100)
@@ -46,8 +46,8 @@ export function NetworkHealthBar({
   const rssiPct = rssiToPercent(avgRssi);
 
   return (
-    <div className="rounded-xl border border-brand-blue/20 bg-brand-navy p-6">
-      <h2 className="font-heading text-xl font-bold text-white">
+    <div className="bg-background rounded-xl border border-border p-6">
+      <h2 className="font-heading text-xl font-bold text-foreground">
         Network Health
       </h2>
 
@@ -56,16 +56,16 @@ export function NetworkHealthBar({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Battery className="size-4 text-zinc-400" />
-              <span className="font-body text-sm text-zinc-300">
+              <Battery className="size-4 text-muted-foreground" />
+              <span className="font-body text-sm text-muted-foreground">
                 Average Battery
               </span>
             </div>
-            <span className="font-body text-sm font-medium text-white">
+            <span className="font-body text-sm font-medium text-foreground">
               {avgBatteryPct}%
             </span>
           </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-brand-dark">
+          <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
             <div
               className="h-full rounded-full transition-all"
               style={{
@@ -80,16 +80,16 @@ export function NetworkHealthBar({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Signal className="size-4 text-zinc-400" />
-              <span className="font-body text-sm text-zinc-300">
+              <Signal className="size-4 text-muted-foreground" />
+              <span className="font-body text-sm text-muted-foreground">
                 Signal Strength
               </span>
             </div>
-            <span className="font-body text-sm font-medium text-white">
+            <span className="font-body text-sm font-medium text-foreground">
               {avgRssi} dBm
             </span>
           </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-brand-dark">
+          <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
             <div
               className="h-full rounded-full transition-all"
               style={{
@@ -102,11 +102,11 @@ export function NetworkHealthBar({
       </div>
 
       {/* Status counts */}
-      <div className="mt-6 grid grid-cols-4 gap-2 border-t border-brand-blue/20 pt-5">
+      <div className="border-border mt-6 grid grid-cols-4 gap-2 border-t pt-5">
         <StatusCount value={activeCount} label="Active" color="text-emerald-400" />
         <StatusCount value={warningCount} label="Warning" color="text-amber-400" />
         <StatusCount value={criticalAlerts} label="Critical" color="text-red-400" />
-        <StatusCount value={offlineCount} label="Offline" color="text-zinc-400" />
+        <StatusCount value={offlineCount} label="Offline" color="text-muted-foreground" />
       </div>
     </div>
   );
@@ -122,7 +122,7 @@ function StatusCount({ value, label, color }: StatusCountProps) {
   return (
     <div className="text-center">
       <p className={`font-heading text-2xl font-bold ${color}`}>{value}</p>
-      <p className="font-body text-xs text-zinc-500">{label}</p>
+      <p className="font-body text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

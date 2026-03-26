@@ -46,20 +46,20 @@ export function OverviewContent() {
   if (isLoading) {
     return (
       <div className="space-y-6 p-8">
-        <div className="h-20 w-full animate-pulse rounded-xl bg-zinc-800" />
+        <div className="h-20 w-full animate-pulse rounded-xl bg-muted" />
         <div className="grid grid-cols-4 gap-6">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="h-[226px] animate-pulse rounded-xl bg-zinc-800"
+              className="h-[226px] animate-pulse rounded-xl bg-muted"
             />
           ))}
         </div>
         <div className="grid grid-cols-2 gap-6">
-          <div className="h-[454px] animate-pulse rounded-xl bg-zinc-800" />
-          <div className="h-[454px] animate-pulse rounded-xl bg-zinc-800" />
+          <div className="h-[454px] animate-pulse rounded-xl bg-muted" />
+          <div className="h-[454px] animate-pulse rounded-xl bg-muted" />
         </div>
-        <div className="h-[330px] animate-pulse rounded-xl bg-zinc-800" />
+        <div className="h-[330px] animate-pulse rounded-xl bg-muted" />
       </div>
     );
   }

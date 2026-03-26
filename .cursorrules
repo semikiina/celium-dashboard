@@ -213,7 +213,7 @@ export function useNodes() {
 
 ## Styling Rules
 
-- Use Tailwind utility classes. No custom CSS unless adding a new global style to `styles/globals.css`.
+- Use Tailwind utility classes. No custom CSS unless adding a new global style to `app/globals.css` (shadcn preset tokens only).
 - The dashboard is **dark-themed**. The base surfaces are:
   - Page background: `bg-brand-navy` (`#121D2A`)
   - Elevated surface (cards, panels): `bg-zinc-900` or `bg-zinc-800`
@@ -232,8 +232,9 @@ export function useNodes() {
 
 ## Typography Rules
 
-- **Headings** (page titles, section titles, card titles): use `font-heading` (Poppins). Add `font-bold` or `font-semibold` as appropriate.
-- **Body and UI text** (descriptions, labels, table cells, badges): use `font-body` (Inter). Add `font-medium` for emphasis.
+- **Typeface**: Inter only — loaded once in `app/layout.tsx` (`next/font/google`). `font-heading` and `font-body` both use the same Inter stack; keep the class names for semantic role.
+- **Headings** (page titles, section titles, card titles): use `font-heading`. Add `font-bold` or `font-semibold` as appropriate.
+- **Body and UI text** (descriptions, labels, table cells, badges): use `font-body`. Add `font-medium` for emphasis.
 - Never use a raw `<style>` tag to set fonts. Fonts are loaded via `next/font/google` in `app/layout.tsx` and applied via Tailwind — do not change this setup.
 - Do not use system fonts or import fonts from any CDN.
 
