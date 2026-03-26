@@ -66,9 +66,12 @@ celium-dashboard/
 │       │   └── PageWrapper.tsx
 │       │
 │       ├── overview/
+│       │   ├── AlertBanner.tsx     # Sticky critical-alert banner shown at top of Overview page
 │       │   ├── KpiCard.tsx         # Single KPI tile with colour-coded state accent
 │       │   ├── KpiStrip.tsx        # Horizontal row of 4 KpiCards for overview metrics
+│       │   ├── OverviewContent.tsx # Client component shell for all interactive overview content
 │       │   ├── StatCard.tsx        # Single KPI tile (nodes active, alerts, etc.)
+│       │   ├── TriageNodeList.tsx  # Priority-sorted node list surfacing offline/warning nodes first
 │       │   └── NetworkHealthBar.tsx
 │       │
 │       ├── nodes/
