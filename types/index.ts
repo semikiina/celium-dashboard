@@ -147,7 +147,9 @@ export interface UseOverviewDataReturn {
   nodes: Node[];
   latestReadings: Record<string, Reading>;
   kpi: OverviewKpi;
+  stats: NetworkStats | undefined;
   activeAlerts: Alert[];
+  avgBatteryPct: number;
   isLoading: boolean;
   error: unknown;
 }

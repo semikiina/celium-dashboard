@@ -107,6 +107,16 @@ export function useOverviewData(): UseOverviewDataReturn {
         ) / 10
       : 0;
 
+  const batteryValues = readings
+    .map((r) => r.batteryPct)
+    .filter((v): v is number => v !== null);
+  const avgBatteryPct =
+    batteryValues.length > 0
+      ? Math.round(
+          batteryValues.reduce((sum, v) => sum + v, 0) / batteryValues.length,
+        )
+      : 0;
+
   const kpi: OverviewKpi = {
     nodesOnline: statsData?.onlineNodes ?? 0,
     messagesToday,
@@ -118,7 +128,9 @@ export function useOverviewData(): UseOverviewDataReturn {
     nodes,
     latestReadings,
     kpi,
+    stats: statsData,
     activeAlerts,
+    avgBatteryPct,
     isLoading,
     error,
   };
