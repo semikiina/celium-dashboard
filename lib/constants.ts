@@ -16,6 +16,18 @@ export const NODE_TYPE_SHORT: Record<NodeType, string> = {
   end_node: 'C1',
 };
 
+export const NODE_TYPE_EMOJI: Record<NodeType, string> = {
+  gateway: '🛰️',
+  relay: '🔄',
+  end_node: '📡',
+};
+
+export const NODE_TYPE_DISPLAY: Record<NodeType, string> = {
+  gateway: 'Gateway',
+  relay: 'Relay',
+  end_node: 'End Node',
+};
+
 export const STATUS_COLOURS: Record<NodeStatus, string> = {
   online: 'bg-green-500/15 text-green-400 border border-green-500/40',
   offline: 'bg-red-500/15 text-red-400 border border-red-500/40',
@@ -28,6 +40,19 @@ export const ALERT_SEVERITY_COLOURS: Record<AlertSeverity, string> = {
   warning: 'bg-amber-500/15 text-amber-400 border border-amber-500/40',
   critical: 'bg-red-500/15 text-red-400 border border-red-500/40',
 };
+
+/**
+ * Brand colour hex values — use the Tailwind token classes (e.g. `bg-brand-dark`)
+ * instead of referencing these directly. Listed here for documentation only.
+ *
+ * | Token         | Hex       | Usage                                     |
+ * |---------------|-----------|-------------------------------------------|
+ * | brand-blue    | #1784E3   | Primary actions, active states             |
+ * | brand-navy    | #121D2A   | Page / card background                     |
+ * | brand-cyan    | #5DD4D8   | Accent, secondary highlights               |
+ * | brand-deep    | #1E3A8A   | Hover / pressed depth                      |
+ * | brand-dark    | #0A0F14   | Inset surfaces (inputs, table headers)     |
+ */
 
 export const REFRESH_INTERVAL = 30000;
 

@@ -42,6 +42,7 @@ export async function GET() {
     onlineNodes: nodes.filter((n) => n.status === 'online').length,
     offlineNodes: nodes.filter((n) => n.status === 'offline').length,
     warningNodes: nodes.filter((n) => n.status === 'warning').length,
+    unknownNodes: nodes.filter((n) => n.status === 'unknown').length,
     activeAlerts: alerts.length,
     gatewayCount: nodes.filter((n) => n.type === 'gateway').length,
     endNodeCount: nodes.filter((n) => n.type === 'end_node').length,

@@ -81,7 +81,7 @@ export function RecentAlerts({ alerts, nodes }: RecentAlertsProps) {
             return (
               <div
                 key={alert.id}
-                className="rounded-[10px] border border-brand-blue/10 bg-[#0a0f14] p-3"
+                className="rounded-[10px] border border-brand-blue/10 bg-brand-dark p-3"
               >
                 <div className="flex items-start gap-3">
                   <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red-400" />

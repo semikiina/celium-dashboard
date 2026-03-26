@@ -78,6 +78,7 @@
   --color-brand-navy: #121D2A;
   --color-brand-cyan: #5DD4D8;
   --color-brand-deep: #1E3A8A;
+  --color-brand-dark: #0A0F14;
 
   --background-image-brand-gradient: linear-gradient(to right, #1784E3, #5DD4D8);
 
@@ -91,6 +92,7 @@
     --color-brand-navy: #121D2A;
     --color-brand-cyan: #5DD4D8;
     --color-brand-deep: #1E3A8A;
+    --color-brand-dark: #0A0F14;
 
     --background-image-brand-gradient: linear-gradient(to right, #1784E3, #5DD4D8);
 

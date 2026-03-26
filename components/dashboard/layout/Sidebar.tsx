@@ -56,7 +56,7 @@ export function Sidebar() {
               CELIUM
             </span>
             <span className="font-body text-[10px] leading-[10px] text-brand-cyan">
-              ArcLoRaM Network Monitor
+              Celium Network Monitor
             </span>
           </div>
         </Link>

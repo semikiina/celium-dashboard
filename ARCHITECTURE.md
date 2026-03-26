@@ -295,6 +295,7 @@ export interface NetworkStats {
   onlineNodes: number;
   offlineNodes: number;
   warningNodes: number;
+  unknownNodes: number;
   activeAlerts: number;
   gatewayCount: number;
   endNodeCount: number;

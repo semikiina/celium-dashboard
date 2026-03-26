@@ -2,30 +2,42 @@
 
 /**
  * NodeTable
- * Renders a filterable-ready table of network nodes. Pure presentational — it
- * receives an already-filtered list and renders an HTML `<table>` with header,
- * body rows, a loading skeleton state, and an empty state.
+ * Renders a table of network nodes matching the Figma design for Page 2 — Nodes.
  *
- * Columns: Name, Type, Status, Last Seen, RSSI, SNR, Battery.
+ * Columns: Node (sortable), Type, Status (sortable), Battery (sortable),
+ *          Signal (sortable), Last Seen (sortable), Location.
  *
- * Each body row is clickable and navigates to the node detail page via
- * `useRouter().push` (a `<Link>` inside `<tr>` would produce invalid HTML).
+ * Each body row is clickable and navigates to the node detail page.
  *
- * @prop nodes       — pre-filtered array of Node objects, each augmented with
- *                     its most recent Reading (or null)
- * @prop isLoading   — when true, renders 6 animated skeleton rows
+ * @prop nodes       — pre-filtered array of Node objects with latestReading
+ * @prop isLoading   — when true, renders skeleton rows
+ * @prop sortColumn  — currently active sort column key
+ * @prop sortDir     — current sort direction
+ * @prop onSort      — callback when a sortable header is clicked
  */
 
 import { type CSSProperties } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowUpDown } from 'lucide-react';
 import { Node, Reading } from '@/types';
-import { NODE_TYPE_LABELS, NODE_TYPE_SHORT } from '@/lib/constants';
-import { cn, formatRelativeTime } from '@/lib/utils';
+import { NODE_TYPE_EMOJI, NODE_TYPE_DISPLAY, NODE_TYPE_SHORT } from '@/lib/constants';
+import {
+  cn,
+  formatAbsoluteDateTime,
+  formatCoordinates,
+  getSignalColourClass,
+} from '@/lib/utils';
 import { NodeStatusBadge } from '@/components/dashboard/nodes/NodeStatusBadge';
+
+export type SortColumn = 'name' | 'status' | 'battery' | 'signal' | 'lastSeen';
+export type SortDir = 'asc' | 'desc';
 
 interface NodeTableProps {
   nodes: (Node & { latestReading: Reading | null })[];
   isLoading: boolean;
+  sortColumn: SortColumn;
+  sortDir: SortDir;
+  onSort: (column: SortColumn) => void;
 }
 
 const COLUMN_COUNT = 7;
@@ -37,115 +49,194 @@ function getBatteryColour(pct: number): string {
   return 'bg-red-500';
 }
 
-export function NodeTable({ nodes, isLoading }: NodeTableProps) {
+const thBase =
+  'px-6 py-5 text-left font-body text-sm font-medium text-zinc-300';
+
+export function NodeTable({
+  nodes,
+  isLoading,
+  sortColumn,
+  sortDir,
+  onSort,
+}: NodeTableProps) {
   const router = useRouter();
 
   return (
-    <table className="w-full text-sm">
-      <thead>
-        <tr className="bg-zinc-800">
-          <th className="px-4 py-3 text-left font-body text-xs font-medium uppercase tracking-wide text-zinc-400">
-            Name
-          </th>
-          <th className="px-4 py-3 text-left font-body text-xs font-medium uppercase tracking-wide text-zinc-400">
-            Type
-          </th>
-          <th className="px-4 py-3 text-left font-body text-xs font-medium uppercase tracking-wide text-zinc-400">
-            Status
-          </th>
-          <th className="px-4 py-3 text-left font-body text-xs font-medium uppercase tracking-wide text-zinc-400">
-            Last Seen
-          </th>
-          <th className="px-4 py-3 text-left font-body text-xs font-medium uppercase tracking-wide text-zinc-400">
-            RSSI
-          </th>
-          <th className="px-4 py-3 text-left font-body text-xs font-medium uppercase tracking-wide text-zinc-400">
-            SNR
-          </th>
-          <th className="px-4 py-3 text-left font-body text-xs font-medium uppercase tracking-wide text-zinc-400">
-            Battery
-          </th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {isLoading && <SkeletonRows />}
-
-        {!isLoading && nodes.length === 0 && (
-          <tr>
-            <td
-              colSpan={COLUMN_COUNT}
-              className="px-4 py-12 text-center font-body text-sm text-zinc-500"
-            >
-              No nodes match your filters
-            </td>
+    <div className="rounded-[14px] border border-brand-blue/20 bg-brand-navy overflow-hidden">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="bg-brand-dark border-b border-brand-blue/20">
+            <SortableHeader
+              label="Node"
+              column="name"
+              sortColumn={sortColumn}
+              sortDir={sortDir}
+              onSort={onSort}
+            />
+            <th className={thBase}>Type</th>
+            <SortableHeader
+              label="Status"
+              column="status"
+              sortColumn={sortColumn}
+              sortDir={sortDir}
+              onSort={onSort}
+            />
+            <SortableHeader
+              label="Battery"
+              column="battery"
+              sortColumn={sortColumn}
+              sortDir={sortDir}
+              onSort={onSort}
+            />
+            <SortableHeader
+              label="Signal"
+              column="signal"
+              sortColumn={sortColumn}
+              sortDir={sortDir}
+              onSort={onSort}
+            />
+            <SortableHeader
+              label="Last Seen"
+              column="lastSeen"
+              sortColumn={sortColumn}
+              sortDir={sortDir}
+              onSort={onSort}
+            />
+            <th className={thBase}>Location</th>
           </tr>
-        )}
+        </thead>
 
-        {!isLoading &&
-          nodes.map((node) => (
-            <tr
-              key={node.id}
-              onClick={() => router.push(`/nodes/${node.id}`)}
-              className="cursor-pointer border-b border-zinc-800 bg-zinc-900 transition-colors hover:bg-zinc-800"
-            >
-              {/* Name + type short label */}
-              <td className="px-4 py-3">
-                <p className="font-heading font-semibold text-zinc-100">
-                  {node.name}
-                </p>
-                <p className="font-body text-xs text-zinc-500">
-                  {NODE_TYPE_SHORT[node.type]}
-                </p>
-              </td>
+        <tbody>
+          {isLoading && <SkeletonRows />}
 
-              {/* Type — full label */}
-              <td className="px-4 py-3 font-body text-zinc-300">
-                {NODE_TYPE_LABELS[node.type]}
-              </td>
-
-              {/* Status badge */}
-              <td className="px-4 py-3">
-                <NodeStatusBadge status={node.status} />
-              </td>
-
-              {/* Last Seen */}
-              <td className="px-4 py-3 font-body text-zinc-300">
-                {formatRelativeTime(node.lastSeenAt)}
-              </td>
-
-              {/* RSSI */}
-              <td className="px-4 py-3">
-                {node.latestReading?.rssi != null ? (
-                  <span className="font-body text-zinc-100">
-                    {node.latestReading.rssi}{' '}
-                    <span className="text-zinc-500">dBm</span>
-                  </span>
-                ) : (
-                  <span className="font-body text-zinc-500">—</span>
-                )}
-              </td>
-
-              {/* SNR */}
-              <td className="px-4 py-3">
-                {node.latestReading?.snr != null ? (
-                  <span className="font-body text-zinc-100">
-                    {node.latestReading.snr}{' '}
-                    <span className="text-zinc-500">dB</span>
-                  </span>
-                ) : (
-                  <span className="font-body text-zinc-500">—</span>
-                )}
-              </td>
-
-              {/* Battery */}
-              <td className="px-4 py-3">
-                <BatteryCell pct={node.latestReading?.batteryPct ?? null} />
+          {!isLoading && nodes.length === 0 && (
+            <tr>
+              <td
+                colSpan={COLUMN_COUNT}
+                className="px-6 py-12 text-center font-body text-sm text-zinc-500"
+              >
+                No nodes match your filters
               </td>
             </tr>
-          ))}
-      </tbody>
-    </table>
+          )}
+
+          {!isLoading &&
+            nodes.map((node) => {
+              const { time, date } = formatAbsoluteDateTime(node.lastSeenAt);
+              const rssi = node.latestReading?.rssi ?? null;
+              const batteryPct = node.latestReading?.batteryPct ?? null;
+
+              return (
+                <tr
+                  key={node.id}
+                  onClick={() => router.push(`/nodes/${node.id}`)}
+                  className="cursor-pointer border-b border-brand-blue/10 transition-colors hover:bg-zinc-800/40"
+                >
+                  {/* Node name + external ID */}
+                  <td className="px-6 py-4">
+                    <p className="font-heading font-semibold text-zinc-100">
+                      {node.name}
+                    </p>
+                    <p className="mt-0.5 font-body text-xs text-brand-cyan">
+                      {NODE_TYPE_SHORT[node.type]}-{String(node.externalId).padStart(3, '0')}
+                    </p>
+                  </td>
+
+                  {/* Type with emoji */}
+                  <td className="px-6 py-4">
+                    <span className="inline-flex items-center gap-1.5 font-body text-sm text-zinc-300">
+                      <span>{NODE_TYPE_EMOJI[node.type]}</span>
+                      {NODE_TYPE_DISPLAY[node.type]}
+                    </span>
+                  </td>
+
+                  {/* Status badge */}
+                  <td className="px-6 py-4">
+                    <NodeStatusBadge status={node.status} />
+                  </td>
+
+                  {/* Battery */}
+                  <td className="px-6 py-4">
+                    <BatteryCell pct={batteryPct} />
+                  </td>
+
+                  {/* Signal (RSSI) */}
+                  <td className="px-6 py-4">
+                    {rssi !== null ? (
+                      <span
+                        className={cn(
+                          'font-body text-sm font-medium',
+                          getSignalColourClass(rssi),
+                        )}
+                      >
+                        {rssi} dBm
+                      </span>
+                    ) : (
+                      <span className="font-body text-sm text-zinc-500">—</span>
+                    )}
+                  </td>
+
+                  {/* Last Seen */}
+                  <td className="px-6 py-4">
+                    <p className="font-body text-sm text-zinc-100">{time}</p>
+                    {date && (
+                      <p className="mt-0.5 font-body text-xs text-zinc-500">
+                        {date}
+                      </p>
+                    )}
+                  </td>
+
+                  {/* Location */}
+                  <td className="px-6 py-4">
+                    <span className="font-body text-sm text-zinc-400">
+                      {formatCoordinates(node.lat, node.lng)}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+interface SortableHeaderProps {
+  label: string;
+  column: SortColumn;
+  sortColumn: SortColumn;
+  sortDir: SortDir;
+  onSort: (column: SortColumn) => void;
+}
+
+function SortableHeader({
+  label,
+  column,
+  sortColumn,
+  sortDir,
+  onSort,
+}: SortableHeaderProps) {
+  const isActive = sortColumn === column;
+
+  return (
+    <th className={thBase}>
+      <button
+        type="button"
+        onClick={() => onSort(column)}
+        className={cn(
+          'inline-flex items-center gap-1.5 transition-colors hover:text-zinc-100',
+          isActive && 'text-zinc-100',
+        )}
+      >
+        {label}
+        <ArrowUpDown
+          className={cn(
+            'size-3.5',
+            isActive ? 'text-brand-cyan' : 'text-zinc-500',
+          )}
+        />
+      </button>
+    </th>
   );
 }
 
@@ -155,18 +246,22 @@ interface BatteryCellProps {
 
 function BatteryCell({ pct }: BatteryCellProps) {
   if (pct === null || pct === undefined) {
-    return <span className="font-body text-zinc-500">—</span>;
+    return <span className="font-body text-sm text-zinc-500">—</span>;
   }
 
   return (
     <div className="flex items-center gap-2">
-      <div className="h-2 w-20 overflow-hidden rounded-full bg-zinc-700">
+      <div className="h-2 w-16 overflow-hidden rounded-full bg-zinc-700">
         <div
           className={cn(
             'h-full rounded-full w-[var(--batt-w)]',
             getBatteryColour(pct),
           )}
-          style={{ '--batt-w': `${Math.min(Math.max(pct, 0), 100)}%` } as CSSProperties}
+          style={
+            {
+              '--batt-w': `${Math.min(Math.max(pct, 0), 100)}%`,
+            } as CSSProperties
+          }
         />
       </div>
       <span className="font-body text-xs text-zinc-300">{pct}%</span>
@@ -180,39 +275,33 @@ function SkeletonRows() {
       {Array.from({ length: SKELETON_ROW_COUNT }).map((_, i) => (
         <tr
           key={`skeleton-${i}`}
-          className="border-b border-zinc-800 bg-zinc-900"
+          className="border-b border-brand-blue/10"
         >
-          {/* Name */}
-          <td className="px-4 py-3">
+          <td className="px-6 py-4">
             <div className="h-4 w-28 animate-pulse rounded bg-zinc-700" />
-            <div className="mt-1 h-3 w-10 animate-pulse rounded bg-zinc-700" />
+            <div className="mt-1 h-3 w-16 animate-pulse rounded bg-zinc-700" />
           </td>
-          {/* Type */}
-          <td className="px-4 py-3">
-            <div className="h-4 w-24 animate-pulse rounded bg-zinc-700" />
-          </td>
-          {/* Status */}
-          <td className="px-4 py-3">
-            <div className="h-5 w-16 animate-pulse rounded-full bg-zinc-700" />
-          </td>
-          {/* Last Seen */}
-          <td className="px-4 py-3">
+          <td className="px-6 py-4">
             <div className="h-4 w-20 animate-pulse rounded bg-zinc-700" />
           </td>
-          {/* RSSI */}
-          <td className="px-4 py-3">
-            <div className="h-4 w-16 animate-pulse rounded bg-zinc-700" />
+          <td className="px-6 py-4">
+            <div className="h-5 w-16 animate-pulse rounded-full bg-zinc-700" />
           </td>
-          {/* SNR */}
-          <td className="px-4 py-3">
-            <div className="h-4 w-14 animate-pulse rounded bg-zinc-700" />
-          </td>
-          {/* Battery */}
-          <td className="px-4 py-3">
+          <td className="px-6 py-4">
             <div className="flex items-center gap-2">
-              <div className="h-2 w-20 animate-pulse rounded-full bg-zinc-700" />
+              <div className="h-2 w-16 animate-pulse rounded-full bg-zinc-700" />
               <div className="h-3 w-8 animate-pulse rounded bg-zinc-700" />
             </div>
+          </td>
+          <td className="px-6 py-4">
+            <div className="h-4 w-16 animate-pulse rounded bg-zinc-700" />
+          </td>
+          <td className="px-6 py-4">
+            <div className="h-4 w-20 animate-pulse rounded bg-zinc-700" />
+            <div className="mt-1 h-3 w-16 animate-pulse rounded bg-zinc-700" />
+          </td>
+          <td className="px-6 py-4">
+            <div className="h-4 w-24 animate-pulse rounded bg-zinc-700" />
           </td>
         </tr>
       ))}
