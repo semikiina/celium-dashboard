@@ -64,6 +64,8 @@ celium-dashboard/
 │       │   └── PageWrapper.tsx
 │       │
 │       ├── overview/
+│       │   ├── KpiCard.tsx         # Single KPI tile with colour-coded state accent
+│       │   ├── KpiStrip.tsx        # Horizontal row of 4 KpiCards for overview metrics
 │       │   ├── StatCard.tsx        # Single KPI tile (nodes active, alerts, etc.)
 │       │   └── NetworkHealthBar.tsx
 │       │
