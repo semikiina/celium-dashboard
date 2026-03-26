@@ -43,6 +43,8 @@ celium-dashboard/
 │   └── api/
 │       ├── nodes/
 │       │   ├── route.ts            # GET /api/nodes — list all nodes
+│       │   ├── latest-readings/
+│       │   │   └── route.ts        # GET /api/nodes/latest-readings — most recent reading per node
 │       │   └── [id]/
 │       │       ├── route.ts        # GET /api/nodes/:id — single node
 │       │       └── readings/
@@ -64,10 +66,16 @@ celium-dashboard/
 │       │   └── PageWrapper.tsx
 │       │
 │       ├── overview/
+│       │   ├── AlertBanner.tsx     # Sticky critical-alert banner shown at top of Overview page
+│       │   ├── KpiCard.tsx         # Single KPI tile with colour-coded state accent
+│       │   ├── KpiStrip.tsx        # Horizontal row of 4 KpiCards for overview metrics
+│       │   ├── OverviewContent.tsx # Client component shell for all interactive overview content
 │       │   ├── StatCard.tsx        # Single KPI tile (nodes active, alerts, etc.)
+│       │   ├── TriageNodeList.tsx  # Priority-sorted node list surfacing offline/warning nodes first
 │       │   └── NetworkHealthBar.tsx
 │       │
 │       ├── nodes/
+│       │   ├── NodeFilterBar.tsx   # Search input + status filter button group (controlled)
 │       │   ├── NodeTable.tsx       # Sortable/filterable node list
 │       │   ├── NodeStatusBadge.tsx # online / offline / warning badge
 │       │   └── NodeCard.tsx        # Compact node summary card
@@ -91,6 +99,7 @@ celium-dashboard/
 │           └── AlertItem.tsx       # Single alert row with severity colour
 │
 ├── hooks/
+│   ├── useOverviewData.ts          # SWR hook — aggregates all Overview page data (nodes, stats, alerts, latest readings, KPIs)
 │   ├── useNodes.ts                 # SWR hook → GET /api/nodes
 │   ├── useNode.ts                  # SWR hook → GET /api/nodes/:id
 │   ├── useReadings.ts              # SWR hook → GET /api/nodes/:id/readings
@@ -286,6 +295,7 @@ export interface NetworkStats {
   onlineNodes: number;
   offlineNodes: number;
   warningNodes: number;
+  unknownNodes: number;
   activeAlerts: number;
   gatewayCount: number;
   endNodeCount: number;
