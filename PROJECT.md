@@ -2,7 +2,7 @@
 
 ## What Is This?
 
-Celium Dashboard is the web-based monitoring interface for the **ArcLoRaM Kit** — an off-grid connectivity solution built on a custom LoRaWAN-based mesh protocol. It is designed to safeguard and add telemetry/agent tracking to vast areas in extreme regions (arctic, desert, jungle, forest). The dashboard visualises the state of a distributed network of hardware nodes deployed across large geographic areas (up to 310,000 km²).
+Celium Dashboard is the web-based monitoring interface for the **Celium Kit** — an off-grid connectivity solution built on a custom LoRaWAN-based mesh protocol. It is designed to safeguard and add telemetry/agent tracking to vast areas in extreme regions (arctic, desert, jungle, forest). The dashboard visualises the state of a distributed network of hardware nodes deployed across large geographic areas (up to 310,000 km²).
 
 This repository is the **MVP prototype**. It uses mocked data seeded into a real database to simulate what live network telemetry would look like. The architecture is designed so that swapping mocked data for a live ingestion pipeline requires minimal structural change.
 
@@ -10,7 +10,7 @@ This repository is the **MVP prototype**. It uses mocked data seeded into a real
 
 ## Project Goals
 
-- Provide a real-time (or near-real-time) view of the ArcLoRaM node network
+- Provide a real-time (or near-real-time) view of the Celium node network
 - Allow operators to drill into individual nodes and inspect sensor readings over time
 - Track both static sensors and mobile personal distress beacons (tourists/field agents)
 - Surface alerts and anomalies in the network
@@ -26,7 +26,7 @@ Understanding these terms is essential for reading the codebase:
 |---|---|---|
 | **Gateway Node** | `C3` | The primary network anchor. Installed at high altitude (mast, hilltop, public facility). Provides network timing and internet uplink (satellite or fibre). Aggregates all data from the network and acts as the ultimate data recipient. Manages its own cluster of C1/C2 nodes. Quantity per kit: 1–3. |
 | **Relay Node** | `C2` | Deployed along coverage corridors to extend range and ensure mesh continuity through terrain obstacles. Installed on a mast. Also manages a cluster of C1 end nodes. Can carry its own sensors. Supports energy harvesting (solar, wind). Quantity: determined by network simulator. |
-| **End Node** | `C1` | The leaf node of the network. Primarily an interface module for sensors (landslide, permafrost, GNSS, vibration, etc.) or a personal distress beacon worn by a tourist or field operator. Includes configurable I/O ports and a compact MCU running the ArcLoRaM firmware stack. Can be static (fixed sensor installation) or mobile (worn device). Quantity: determined by network simulator. |
+| **End Node** | `C1` | The leaf node of the network. Primarily an interface module for sensors (landslide, permafrost, GNSS, vibration, etc.) or a personal distress beacon worn by a tourist or field operator. Includes configurable I/O ports and a compact MCU running the Celium firmware stack. Can be static (fixed sensor installation) or mobile (worn device). Quantity: determined by network simulator. |
 | **Cluster** | — | One C3 or C2 node + all C1 end nodes it directly manages. Forms a single "star". |
 | **Mesh** | — | The full collection of clusters. C3 gateways and C2 relays interconnect at the upper layer, forming a mesh above the star clusters. |
 | **Self-healing** | — | If a C3 or C2 goes offline, its C1 nodes re-associate with a neighbouring parent node automatically. |
@@ -48,7 +48,7 @@ Understanding these terms is essential for reading the codebase:
 
 ---
 
-## ArcLoRaM Kit Components (for context)
+## Celium Kit Components (for context)
 
 The dashboard is one component of a larger commercial kit sold as a self-contained deployment unit:
 
@@ -59,7 +59,7 @@ The dashboard is one component of a larger commercial kit sold as a self-contain
 | End Node (C1) | Quantity TBD by simulator | 350 DKK each |
 | **Dashboard Software** | **This repository — cloud hosted, monthly subscription** | **450 DKK/mo** |
 | Deployment & Maintenance Kit | Mounting tools, installation guide, field calibration interface | As needed |
-| ArcLoRaM Firmware | Three firmware variants (one per node class) covering LoRa driver, TDMA scheduler, routing logic, channel access, Sensor Integration Layer (SIL), caching, and deep sleep | Bundled |
+| Celium Firmware | Three firmware variants (one per node class) covering LoRa driver, TDMA scheduler, routing logic, channel access, Sensor Integration Layer (SIL), caching, and deep sleep | Bundled |
 
 ---
 

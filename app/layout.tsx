@@ -34,7 +34,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
   return (
     <html lang="en" className={`${headingFont.variable} ${bodyFont.variable}`}>
-      <body className="bg-brand-navy text-zinc-100">
+      <body className="bg-brand-navy text-zinc-100" suppressHydrationWarning>
         <div className="flex min-h-screen">
           <Sidebar />
           <main className="flex-1 overflow-auto">{children}</main>

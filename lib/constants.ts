@@ -50,6 +50,18 @@ export const ALERT_SEVERITY_VALUES = {
   critical: 'critical',
 } as const;
 
+/**
+ * Tailwind classes for the critical-alert banner on the Overview page.
+ * Separated from ALERT_SEVERITY_COLOURS because the banner has multiple
+ * styled regions (container, icon, text, link) rather than a single badge.
+ */
+export const CRITICAL_BANNER_STYLES = {
+  container: 'bg-red-900/80 backdrop-blur-sm',
+  icon: 'text-red-400',
+  text: 'text-red-100',
+  link: 'text-red-300 hover:text-red-100',
+} as const;
+
 export const ALERT_TYPE_VALUES = {
   nodeOffline: 'node_offline',
   signalLost: 'signal_lost',
