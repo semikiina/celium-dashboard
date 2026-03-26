@@ -362,7 +362,7 @@ Fonts are loaded via `next/font/google` in `app/layout.tsx` — do not use a `<l
 
 ### Logo Usage
 
-All logo SVGs live in `/public/logos/`. Import them as React components using Next.js SVG import or as `<Image>` from `next/image`.
+All logo SVGs live in `/branding/logos/`. Import them as React components using Next.js SVG import or as `<Image>` from `next/image`.
 
 | File | When to use |
 |---|---|
