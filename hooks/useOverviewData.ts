@@ -7,10 +7,9 @@
  * multiple hooks or compute values inline.
  *
  * Fetches:
- *  - GET /api/nodes            — full node list
+ *  - GET /api/nodes            — full node list with latest reading per node
  *  - GET /api/network/stats    — pre-computed NetworkStats
  *  - GET /api/alerts?resolved=false — active unresolved alerts
- *  - GET /api/nodes/latest-readings — most recent Reading per node
  *
  * Returns:
  *  - nodes: Node[]
@@ -49,12 +48,14 @@ function isWithinCurrentUtcDay(timestamp: string): boolean {
 
 export function useOverviewData(): UseOverviewDataReturn {
   const {
-    data: nodesData,
+    data: nodesWithReadings,
     isLoading: nodesLoading,
     error: nodesError,
-  } = useSWR<Node[]>('/api/nodes', fetcher, {
-    refreshInterval: REFRESH_INTERVAL,
-  });
+  } = useSWR<(Node & { latestReading: Reading | null })[]>(
+    '/api/nodes',
+    fetcher,
+    { refreshInterval: REFRESH_INTERVAL },
+  );
 
   const {
     data: statsData,
@@ -72,25 +73,20 @@ export function useOverviewData(): UseOverviewDataReturn {
     refreshInterval: REFRESH_INTERVAL,
   });
 
-  const {
-    data: readingsData,
-    isLoading: readingsLoading,
-    error: readingsError,
-  } = useSWR<Reading[]>('/api/nodes/latest-readings', fetcher, {
-    refreshInterval: REFRESH_INTERVAL,
-  });
+  const isLoading = nodesLoading || statsLoading || alertsLoading;
+  const error = nodesError || statsError || alertsError;
 
-  const isLoading =
-    nodesLoading || statsLoading || alertsLoading || readingsLoading;
-  const error = nodesError || statsError || alertsError || readingsError;
-
-  const nodes = nodesData ?? [];
+  const enrichedNodes = nodesWithReadings ?? [];
+  const nodes: Node[] = enrichedNodes;
   const activeAlerts = alertsData ?? [];
-  const readings = readingsData ?? [];
 
   const latestReadings: Record<string, Reading> = {};
-  for (const reading of readings) {
-    latestReadings[reading.nodeId] = reading;
+  const readings: Reading[] = [];
+  for (const node of enrichedNodes) {
+    if (node.latestReading) {
+      latestReadings[node.id] = node.latestReading;
+      readings.push(node.latestReading);
+    }
   }
 
   const messagesToday = readings.filter((r) =>

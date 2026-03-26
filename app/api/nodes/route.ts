@@ -1,11 +1,14 @@
 /**
  * GET /api/nodes
- * Returns a flat array of all nodes in the network, ordered by creation date
- * (most recent first). Maps snake_case DB columns to camelCase.
+ * Returns all nodes joined with their latest reading.
+ * Each item is shaped as Node & { latestReading: Reading | null }.
+ *
+ * Fetches all rows from `nodes`, then fetches the most recent row from
+ * `readings` per node (DISTINCT ON emulated in JS) and merges them.
  */
 
 import { createClient } from '@/lib/supabase';
-import { Node, NodeRow } from '@/types';
+import { Node, NodeRow, Reading, ReadingRow } from '@/types';
 import { NextResponse } from 'next/server';
 
 function mapRowToNode(row: NodeRow): Node {
@@ -26,18 +29,67 @@ function mapRowToNode(row: NodeRow): Node {
   };
 }
 
+function mapRowToReading(row: ReadingRow): Reading {
+  return {
+    id: row.id,
+    nodeId: row.node_id,
+    timestamp: row.timestamp,
+    temperature: row.temperature,
+    humidity: row.humidity,
+    pressure: row.pressure,
+    rssi: row.rssi,
+    snr: row.snr,
+    spreadingFactor: row.spreading_factor,
+    batteryVoltage: row.battery_voltage,
+    batteryPct: row.battery_pct,
+    hopCount: row.hop_count,
+    seqNum: row.seq_num,
+    rawPayload: row.raw_payload,
+  };
+}
+
 export async function GET() {
   const supabase = createClient();
 
-  const { data, error } = await supabase
-    .from('nodes')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .returns<NodeRow[]>();
+  const [nodesResult, readingsResult] = await Promise.all([
+    supabase
+      .from('nodes')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .returns<NodeRow[]>(),
+    supabase
+      .from('readings')
+      .select('*')
+      .order('node_id', { ascending: true })
+      .order('timestamp', { ascending: false })
+      .returns<ReadingRow[]>(),
+  ]);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  if (nodesResult.error) {
+    return NextResponse.json(
+      { error: nodesResult.error.message },
+      { status: 500 },
+    );
   }
 
-  return NextResponse.json((data ?? []).map(mapRowToNode));
+  if (readingsResult.error) {
+    return NextResponse.json(
+      { error: readingsResult.error.message },
+      { status: 500 },
+    );
+  }
+
+  const latestByNodeId = new Map<string, Reading>();
+  for (const row of readingsResult.data ?? []) {
+    if (!latestByNodeId.has(row.node_id)) {
+      latestByNodeId.set(row.node_id, mapRowToReading(row));
+    }
+  }
+
+  const data = (nodesResult.data ?? []).map((row) => ({
+    ...mapRowToNode(row),
+    latestReading: latestByNodeId.get(row.id) ?? null,
+  }));
+
+  return NextResponse.json(data);
 }
