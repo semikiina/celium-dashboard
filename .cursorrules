@@ -82,7 +82,8 @@ export function NodeStatusBadge({ status }: NodeStatusBadgeProps) {
 
 ---
 
-##  
+## API Route Rules
+
 1. Every API route must validate query parameters and return a typed JSON response.
 2. Use the Supabase server client imported from `@/lib/supabase.ts`.
 3. Always handle errors and return appropriate HTTP status codes.
@@ -178,12 +179,14 @@ export function useNodes() {
 
 ## Logo & Branding Asset Rules
 
-- All logo SVGs live in `/public/logos/`. Import them as Next.js `<Image>` components or as inline SVG React components.
+- All logo SVGs live in `/public/logos/`. Use Next.js `<Image>` with the `src` path starting from `/logos/` (e.g. `src="/logos/full-logo-text-under.svg"`). No import needed — Next.js serves `public/` as the root.
 - Choose the correct logo variant for the context:
-  - Expanded sidebar / onboarding → `logo-full.svg`
-  - Collapsed sidebar / favicon → `logo-icon.svg`
-  - On dark backgrounds (standard dashboard use) → `logo-light.svg`
-  - On light backgrounds → `logo-dark.svg`
+  - Expanded sidebar → `full-logo-text-under.svg`
+  - Collapsed sidebar / favicon → `logo-square.svg`
+  - Circular UI elements / avatars → `logo-circle.svg`
+  - Splash / onboarding screens → `full-logo-text-bg-color.svg`
+  - Brand-accented cards or tiles → `full-logo-logo-bg-color.svg`
+  - Marketing, print, or export → `full-color-full-bg-color.svg`
 - **Never recolour a logo SVG inline** (no `fill=`, `stroke=`, or CSS colour overrides on logo elements). Use the correct file variant instead.
 - Never use a PNG or raster version of the logo.
 

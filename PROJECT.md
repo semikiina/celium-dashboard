@@ -74,7 +74,7 @@ The dashboard is one component of a larger commercial kit sold as a self-contain
 | **Gradient** | `#1784E3` → `#5DD4D8` (left to right, used on hero elements and active states) |
 | **Heading font** | Poppins (bold/semi-bold) |
 | **Body / UI font** | Inter (regular / medium) |
-| **Logo assets** | `/public/logos/` — multiple SVG variants (see ARCHITECTURE.md for usage rules) |
+| **Logo assets** | `/public/logos/` — 6 SVG variants (see ARCHITECTURE.md for usage rules) |
 
 The dark navy (`#121D2A`) doubles as the primary dark background, making the palette naturally suited to the dark-themed dashboard.
 
