@@ -58,9 +58,9 @@ export function NodeRow({ node, latestReading }: NodeRowProps) {
         <NodeStatusBadge status={node.status} />
       </div>
 
-      {/* Last seen (relative) */}
+      {/* Last seen (relative); suppressHydrationWarning: Date.now() differs between SSR and browser */}
       <div className="w-[100px] shrink-0">
-        <p className="font-body text-sm text-zinc-300">
+        <p className="font-body text-sm text-zinc-300" suppressHydrationWarning>
           {formatRelativeTime(node.lastSeenAt)}
         </p>
       </div>
