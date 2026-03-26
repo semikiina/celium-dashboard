@@ -37,3 +37,11 @@ const supabase: SupabaseClient = createSupabaseClient(
 export function createClient(): SupabaseClient {
   return supabase;
 }
+
+/**
+ * createScriptClient
+ * Creates a dedicated Supabase client for one-off scripts with explicit credentials.
+ */
+export function createScriptClient(url: string, key: string): SupabaseClient {
+  return createSupabaseClient(url, key);
+}

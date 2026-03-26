@@ -30,3 +30,30 @@ export const ALERT_SEVERITY_COLOURS: Record<AlertSeverity, string> = {
 };
 
 export const REFRESH_INTERVAL = 30000;
+
+export const NODE_TYPE_VALUES = {
+  gateway: 'gateway',
+  relay: 'relay',
+  endNode: 'end_node',
+} as const;
+
+export const NODE_STATUS_VALUES = {
+  online: 'online',
+  offline: 'offline',
+  warning: 'warning',
+  unknown: 'unknown',
+} as const;
+
+export const ALERT_SEVERITY_VALUES = {
+  info: 'info',
+  warning: 'warning',
+  critical: 'critical',
+} as const;
+
+export const ALERT_TYPE_VALUES = {
+  nodeOffline: 'node_offline',
+  signalLost: 'signal_lost',
+  lowBattery: 'low_battery',
+  firmwareUpdateAvailable: 'firmware_update_available',
+  nodeReassociated: 'node_reassociated',
+} as const;

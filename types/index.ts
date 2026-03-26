@@ -72,3 +72,45 @@ export interface NetworkStats {
   gatewayCount: number;
   endNodeCount: number;
 }
+
+/**
+ * SeedNodeDefinition
+ * Defines one deterministic node entry used by the development seed script.
+ */
+export interface SeedNodeDefinition {
+  key: string;
+  externalId: number;
+  name: string;
+  type: NodeType;
+  status: NodeStatus;
+  parentKey: string | null;
+  lat: number;
+  lng: number;
+  firmwareVer: string;
+  hardwareVer: string;
+  mobile: boolean;
+}
+
+/**
+ * InsertedSeedNode
+ * Minimal node row shape selected back after insert.
+ */
+export interface InsertedSeedNode {
+  id: string;
+  external_id: number;
+  name: string;
+}
+
+/**
+ * SeedAlertDefinition
+ * Defines one deterministic alert entry used by the development seed script.
+ */
+export interface SeedAlertDefinition {
+  nodeKey: string;
+  severity: AlertSeverity;
+  type: string;
+  message: string;
+  resolved: boolean;
+  createdAtOffsetHours: number;
+  resolvedAfterHours: number | null;
+}
