@@ -18,7 +18,19 @@ Before writing any code, read the following in order:
 ### Step 2 — Check the Figma design
 The dashboard has a Figma design file. Before implementing any UI component or page, refer to the Figma file for the correct layout, spacing, typography, and component structure:
 - **Figma file URL:** `https://www.figma.com/design/m0a2hBYx4w46Dpt5Obd04U/Celium-Dashboard-Design?m=auto&t=RUbNgPFxLR5t4KMN-6`
-- The file has 5 pages, each corresponding to a dashboard screen. Before implementing any page or component, navigate to the relevant Figma page for that screen and use it as the design reference.
+- The file has 6 pages. The mapping between Figma pages and the codebase is:
+
+| Figma Page | Dashboard Screen | Route |
+|---|---|---|
+| Page 1 — Overview | Main dashboard landing | `/overview` |
+| Page 2 — Nodes | Full node list with filters | `/nodes` |
+| Page 3 — Map | Geographic network map | `/map` |
+| Page 4 — Data Explorer | Query and explore sensor data | `/explorer` |
+| Page 5 — Node Detail | Per-node detail + charts (not a sidebar tab) | `/nodes/[id]` |
+| Page 6 — Alerts | Alert feed | `/alerts` |
+
+- Pages 1, 2, 3, 4, and 6 are the main sidebar navigation tabs. Page 5 (Node Detail) is reached by clicking a node row on the Nodes page — it is not a sidebar nav item.
+- Before implementing any page or component, navigate to the relevant Figma page for that screen and use it as the design reference.
 - Match the design as closely as possible using the brand tokens already defined in `globals.css` and `lib/constants.ts`
 - If a design detail conflicts with `.cursorrules` conventions, follow `.cursorrules` and note the conflict in a comment
 
