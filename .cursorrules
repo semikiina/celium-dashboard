@@ -4,6 +4,54 @@ You are working on **Celium Dashboard**, a Next.js 14 web application for monito
 
 ---
 
+## Default Agent Workflow
+
+Follow these steps for **every task**, without being asked:
+
+### Step 1 — Read context first
+Before writing any code, read the following in order:
+1. `PROJECT.md` — understand the domain and product
+2. `ARCHITECTURE.md` — understand the file structure, DB schema, and patterns
+3. `.cursorrules` — confirm the conventions you must follow
+4. Any existing files in the directory you are about to write to — understand what is already there before adding anything
+
+### Step 2 — Check the Figma design
+The dashboard has a Figma design file. Before implementing any UI component or page, refer to the Figma file for the correct layout, spacing, typography, and component structure:
+- **Figma file URL:** `https://www.figma.com/design/m0a2hBYx4w46Dpt5Obd04U/Celium-Dashboard-Design?m=auto&t=RUbNgPFxLR5t4KMN-6`
+- The file has 5 pages, each corresponding to a dashboard screen. Before implementing any page or component, navigate to the relevant Figma page for that screen and use it as the design reference.
+- Match the design as closely as possible using the brand tokens already defined in `globals.css` and `lib/constants.ts`
+- If a design detail conflicts with `.cursorrules` conventions, follow `.cursorrules` and note the conflict in a comment
+
+### Step 3 — Implement
+Write the code according to the task, the design, and the rules in this file. Do not install new dependencies. Do not create files outside the structure defined in `ARCHITECTURE.md`.
+
+### Step 4 — Verify after every implementation
+After writing or modifying any file, run the following commands in order and fix any errors before considering the task complete:
+
+```bash
+# 1. Type check — must pass with zero errors
+npx tsc --noEmit
+
+# 2. Lint — must pass with zero errors (warnings are acceptable)
+npx eslint . --ext .ts,.tsx
+
+# 3. Build check — must complete without errors
+npm run build
+```
+
+If any command fails, fix the errors and re-run the command before moving on. Do not leave a task in a broken state.
+
+### Step 5 — Summarise what you did
+After completing the task and all checks pass, provide a short summary covering:
+- Which files were created or modified
+- Any decisions you made that weren't specified in the task
+- Any conflicts between the Figma design and the codebase conventions, and how you resolved them
+- Anything the human should manually check or verify
+
+---
+
+---
+
 ## Project Context
 
 - This is an **MVP prototype**. All data is mocked and seeded into Supabase. There is no live hardware connection yet.
