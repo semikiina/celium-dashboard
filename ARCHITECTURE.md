@@ -61,7 +61,10 @@ celium-dashboard/
 │   │
 │   └── dashboard/
 │       ├── layout/
-│       │   ├── Sidebar.tsx
+│       │   ├── AppSidebar.tsx        # shadcn Sidebar — nav, logo, footer, theme toggle
+│       │   ├── DashboardShell.tsx    # SidebarProvider + TooltipProvider + inset
+│       │   ├── ThemeProvider.tsx     # dark/light class on <html> + localStorage
+│       │   ├── ThemeToggle.tsx       # Sidebar Switch for dark mode
 │       │   ├── Topbar.tsx
 │       │   └── PageWrapper.tsx
 │       │
@@ -352,7 +355,7 @@ theme: {
       'brand-gradient': 'linear-gradient(to right, #1784E3, #5DD4D8)',
     },
     fontFamily: {
-      heading: ['Poppins', 'sans-serif'],
+      heading: ['Inter', 'sans-serif'],
       body:    ['Inter', 'sans-serif'],
     },
   },
@@ -363,12 +366,14 @@ Fonts are loaded via `next/font/google` in `app/layout.tsx` — do not use a `<l
 
 ### Typography
 
-| Role | Font | Weight | Tailwind class pattern |
-|---|---|---|---|
-| Page titles, section headings | Poppins | 700 (bold) | `font-heading font-bold` |
-| Card titles, labels | Poppins | 600 (semi-bold) | `font-heading font-semibold` |
-| Body text, descriptions | Inter | 400 (regular) | `font-body` |
-| UI labels, badges, metadata | Inter | 500 (medium) | `font-body font-medium` |
+All text uses **Inter**, loaded via `next/font/google` in `app/layout.tsx` as **`--font-inter`** (avoid naming it `--font-sans`, which clashes with Tailwind’s default). `app/globals.css` maps `font-sans`, `font-heading`, and `font-body` to `var(--font-inter)`.
+
+| Role | Weight | Tailwind class pattern |
+|---|---|---|
+| Page titles, section headings | 700 (bold) | `font-heading font-bold` |
+| Card titles, labels | 600 (semi-bold) | `font-heading font-semibold` |
+| Body text, descriptions | 400 (regular) | `font-body` |
+| UI labels, badges, metadata | 500 (medium) | `font-body font-medium` |
 
 ### Logo Usage
 

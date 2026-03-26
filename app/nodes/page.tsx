@@ -111,10 +111,10 @@ export default function NodesPage() {
   return (
     <div className="flex flex-col gap-6 p-8">
       <div>
-        <h1 className="font-heading text-4xl font-bold text-zinc-100">
+        <h1 className="font-heading text-4xl font-bold text-foreground">
           Node List
         </h1>
-        <p className="mt-2 font-body text-base text-zinc-400">
+        <p className="mt-2 font-body text-base text-muted-foreground">
           Manage and monitor all network nodes
         </p>
       </div>

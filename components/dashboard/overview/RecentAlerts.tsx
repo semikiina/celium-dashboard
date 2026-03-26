@@ -32,9 +32,9 @@ const SEVERITY_BADGE: Record<string, { bg: string; border: string; text: string;
     label: 'HIGH',
   },
   [ALERT_SEVERITY_VALUES.info]: {
-    bg: 'bg-brand-blue/20',
-    border: 'border-brand-blue/30',
-    text: 'text-brand-blue',
+    bg: 'bg-primary/20',
+    border: 'border-primary/30',
+    text: 'text-primary',
     label: 'INFO',
   },
 };
@@ -45,6 +45,7 @@ function formatAlertTime(iso: string): string {
     minute: '2-digit',
     second: '2-digit',
     hour12: true,
+    timeZone: 'UTC',
   });
 }
 
@@ -53,14 +54,14 @@ export function RecentAlerts({ alerts, nodes }: RecentAlertsProps) {
   const recentAlerts = alerts.slice(0, 3);
 
   return (
-    <div className="rounded-xl border border-brand-blue/20 bg-brand-navy p-6">
+    <div className="bg-background rounded-xl border border-border p-6">
       <div className="flex items-center justify-between">
-        <h2 className="font-heading text-xl font-bold text-white">
+        <h2 className="font-heading text-xl font-bold text-foreground">
           Recent Alerts
         </h2>
         <Link
           href="/alerts"
-          className="font-body text-sm text-brand-cyan transition-colors hover:text-brand-cyan/80"
+          className="font-body text-primary text-sm transition-colors hover:text-primary/80"
         >
           View all &rarr;
         </Link>
@@ -68,7 +69,7 @@ export function RecentAlerts({ alerts, nodes }: RecentAlertsProps) {
 
       <div className="mt-4 space-y-3">
         {recentAlerts.length === 0 ? (
-          <p className="py-8 text-center font-body text-sm text-zinc-500">
+          <p className="py-8 text-center font-body text-sm text-muted-foreground">
             No active alerts
           </p>
         ) : (
@@ -81,7 +82,7 @@ export function RecentAlerts({ alerts, nodes }: RecentAlertsProps) {
             return (
               <div
                 key={alert.id}
-                className="rounded-[10px] border border-brand-blue/10 bg-brand-dark p-3"
+                className="bg-muted rounded-[10px] border border-border/50 p-3"
               >
                 <div className="flex items-start gap-3">
                   <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red-400" />
@@ -92,14 +93,14 @@ export function RecentAlerts({ alerts, nodes }: RecentAlertsProps) {
                       >
                         {badge.label}
                       </span>
-                      <span className="font-body text-xs text-zinc-500">
+                      <span className="font-body text-xs text-muted-foreground">
                         {formatAlertTime(alert.createdAt)}
                       </span>
                     </div>
-                    <p className="mt-1 font-body text-sm leading-5 text-zinc-300">
+                    <p className="mt-1 font-body text-sm leading-5 text-foreground">
                       {alert.message}
                     </p>
-                    <p className="mt-1 font-body text-xs text-zinc-500">
+                    <p className="mt-1 font-body text-xs text-muted-foreground">
                       {nodeName}
                     </p>
                   </div>

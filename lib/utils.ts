@@ -1,5 +1,5 @@
 /**
- * Shared utility functions used across the Celium Dashboard.
+ * Shared helpers: className merging (`cn`) and small formatting utilities for the dashboard.
  */
 
 import { clsx, type ClassValue } from "clsx"
@@ -9,83 +9,70 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-const MINUTE = 60_000;
-const HOUR = 3_600_000;
-const DAY = 86_400_000;
+const timeFormatter = new Intl.DateTimeFormat(undefined, {
+  hour: "2-digit",
+  minute: "2-digit",
+})
+
+const dateFormatter = new Intl.DateTimeFormat(undefined, {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+})
 
 /**
- * formatRelativeTime
- * Converts an ISO timestamp into a human-readable relative string
- * (e.g. "2 min ago", "1 hr ago", "3 days ago").
- * Returns "—" when the input is null or undefined.
+ * Formats an ISO timestamp as clock time plus an optional calendar date line.
  */
-export function formatRelativeTime(iso: string | null | undefined): string {
-  if (!iso) return '—';
-
-  const diff = Date.now() - new Date(iso).getTime();
-
-  if (diff < 0) return 'just now';
-  if (diff < MINUTE) return 'just now';
-  if (diff < HOUR) {
-    const mins = Math.floor(diff / MINUTE);
-    return `${mins} min ago`;
-  }
-  if (diff < DAY) {
-    const hrs = Math.floor(diff / HOUR);
-    return `${hrs} hr ago`;
-  }
-
-  const days = Math.floor(diff / DAY);
-  return `${days} day${days === 1 ? '' : 's'} ago`;
-}
-
-/**
- * formatAbsoluteDateTime
- * Returns { time, date } strings from an ISO timestamp, e.g.
- * { time: "10:27:00 AM", date: "3/20/2026" }.
- * Returns { time: '—', date: '' } when the input is null.
- */
-export function formatAbsoluteDateTime(iso: string | null | undefined): {
-  time: string;
-  date: string;
+export function formatAbsoluteDateTime(iso: string | null): {
+  time: string
+  date: string | undefined
 } {
-  if (!iso) return { time: '—', date: '' };
-
-  const d = new Date(iso);
-  const time = d.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-  });
-  const date = d.toLocaleDateString('en-US', {
-    month: 'numeric',
-    day: 'numeric',
-    year: 'numeric',
-  });
-  return { time, date };
+  if (!iso) {
+    return { time: "—", date: undefined }
+  }
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) {
+    return { time: "—", date: undefined }
+  }
+  return {
+    time: timeFormatter.format(d),
+    date: dateFormatter.format(d),
+  }
 }
 
 /**
- * getSignalColourClass
- * Returns a Tailwind text colour class based on RSSI signal strength:
- *   >= -70 dBm → green (good), -70 to -85 → amber (moderate), < -85 → red (poor).
+ * Returns a short human-readable relative time string (e.g. "2m ago").
  */
-export function getSignalColourClass(rssi: number): string {
-  if (rssi >= -70) return 'text-green-400';
-  if (rssi >= -85) return 'text-amber-400';
-  return 'text-red-400';
+export function formatRelativeTime(iso: string | null): string {
+  if (!iso) return "—"
+  const then = new Date(iso).getTime()
+  if (Number.isNaN(then)) return "—"
+  const sec = Math.round((Date.now() - then) / 1000)
+  if (sec < 60) return `${Math.max(0, sec)}s ago`
+  const min = Math.round(sec / 60)
+  if (min < 60) return `${min}m ago`
+  const hr = Math.round(min / 60)
+  if (hr < 48) return `${hr}h ago`
+  const day = Math.round(hr / 24)
+  return `${day}d ago`
 }
 
 /**
- * formatCoordinates
- * Formats lat/lng to a compact display string.
- * Returns '—' when either value is null.
+ * Formats lat/lng for table cells; returns an em dash when coordinates are missing.
  */
 export function formatCoordinates(
   lat: number | null,
-  lng: number | null,
+  lng: number | null
 ): string {
-  if (lat === null || lng === null) return '—';
-  return `${lat.toFixed(4)}°, ${lng.toFixed(4)}°`;
+  if (lat === null || lng === null) return "—"
+  return `${lat.toFixed(4)}, ${lng.toFixed(4)}`
+}
+
+/**
+ * Tailwind text colour class for RSSI (dBm): stronger signal → greener.
+ */
+export function getSignalColourClass(rssi: number): string {
+  if (rssi >= -70) return "text-emerald-400"
+  if (rssi >= -85) return "text-amber-400"
+  return "text-red-400"
 }

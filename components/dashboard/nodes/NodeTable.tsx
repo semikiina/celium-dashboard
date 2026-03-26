@@ -50,7 +50,7 @@ function getBatteryColour(pct: number): string {
 }
 
 const thBase =
-  'px-6 py-5 text-left font-body text-sm font-medium text-zinc-300';
+  'px-6 py-5 text-left font-body text-sm font-medium text-muted-foreground';
 
 export function NodeTable({
   nodes,
@@ -62,10 +62,10 @@ export function NodeTable({
   const router = useRouter();
 
   return (
-    <div className="rounded-[14px] border border-brand-blue/20 bg-brand-navy overflow-hidden">
+    <div className="bg-background overflow-hidden rounded-[14px] border border-border">
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-brand-dark border-b border-brand-blue/20">
+          <tr className="bg-muted border-border border-b">
             <SortableHeader
               label="Node"
               column="name"
@@ -113,7 +113,7 @@ export function NodeTable({
             <tr>
               <td
                 colSpan={COLUMN_COUNT}
-                className="px-6 py-12 text-center font-body text-sm text-zinc-500"
+                className="px-6 py-12 text-center font-body text-sm text-muted-foreground"
               >
                 No nodes match your filters
               </td>
@@ -130,21 +130,21 @@ export function NodeTable({
                 <tr
                   key={node.id}
                   onClick={() => router.push(`/nodes/${node.id}`)}
-                  className="cursor-pointer border-b border-brand-blue/10 transition-colors hover:bg-zinc-800/40"
+                  className="border-border/50 cursor-pointer border-b transition-colors hover:bg-muted/60"
                 >
                   {/* Node name + external ID */}
                   <td className="px-6 py-4">
-                    <p className="font-heading font-semibold text-zinc-100">
+                    <p className="font-heading font-semibold text-foreground">
                       {node.name}
                     </p>
-                    <p className="mt-0.5 font-body text-xs text-brand-cyan">
+                    <p className="text-primary mt-0.5 font-body text-xs">
                       {NODE_TYPE_SHORT[node.type]}-{String(node.externalId).padStart(3, '0')}
                     </p>
                   </td>
 
                   {/* Type with emoji */}
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center gap-1.5 font-body text-sm text-zinc-300">
+                    <span className="inline-flex items-center gap-1.5 font-body text-sm text-muted-foreground">
                       <span>{NODE_TYPE_EMOJI[node.type]}</span>
                       {NODE_TYPE_DISPLAY[node.type]}
                     </span>
@@ -172,15 +172,15 @@ export function NodeTable({
                         {rssi} dBm
                       </span>
                     ) : (
-                      <span className="font-body text-sm text-zinc-500">—</span>
+                      <span className="font-body text-sm text-muted-foreground">—</span>
                     )}
                   </td>
 
                   {/* Last Seen */}
                   <td className="px-6 py-4">
-                    <p className="font-body text-sm text-zinc-100">{time}</p>
+                    <p className="font-body text-sm text-foreground">{time}</p>
                     {date && (
-                      <p className="mt-0.5 font-body text-xs text-zinc-500">
+                      <p className="mt-0.5 font-body text-xs text-muted-foreground">
                         {date}
                       </p>
                     )}
@@ -188,7 +188,7 @@ export function NodeTable({
 
                   {/* Location */}
                   <td className="px-6 py-4">
-                    <span className="font-body text-sm text-zinc-400">
+                    <span className="font-body text-sm text-muted-foreground">
                       {formatCoordinates(node.lat, node.lng)}
                     </span>
                   </td>
@@ -224,15 +224,15 @@ function SortableHeader({
         type="button"
         onClick={() => onSort(column)}
         className={cn(
-          'inline-flex items-center gap-1.5 transition-colors hover:text-zinc-100',
-          isActive && 'text-zinc-100',
+          'inline-flex items-center gap-1.5 transition-colors hover:text-foreground',
+          isActive && 'text-foreground',
         )}
       >
         {label}
         <ArrowUpDown
           className={cn(
             'size-3.5',
-            isActive ? 'text-brand-cyan' : 'text-zinc-500',
+            isActive ? 'text-primary' : 'text-muted-foreground',
           )}
         />
       </button>
@@ -246,12 +246,12 @@ interface BatteryCellProps {
 
 function BatteryCell({ pct }: BatteryCellProps) {
   if (pct === null || pct === undefined) {
-    return <span className="font-body text-sm text-zinc-500">—</span>;
+    return <span className="font-body text-sm text-muted-foreground">—</span>;
   }
 
   return (
     <div className="flex items-center gap-2">
-      <div className="h-2 w-16 overflow-hidden rounded-full bg-zinc-700">
+      <div className="bg-muted h-2 w-16 overflow-hidden rounded-full">
         <div
           className={cn(
             'h-full rounded-full w-[var(--batt-w)]',
@@ -264,7 +264,7 @@ function BatteryCell({ pct }: BatteryCellProps) {
           }
         />
       </div>
-      <span className="font-body text-xs text-zinc-300">{pct}%</span>
+      <span className="font-body text-xs text-muted-foreground">{pct}%</span>
     </div>
   );
 }
@@ -275,33 +275,33 @@ function SkeletonRows() {
       {Array.from({ length: SKELETON_ROW_COUNT }).map((_, i) => (
         <tr
           key={`skeleton-${i}`}
-          className="border-b border-brand-blue/10"
+          className="border-border/50 border-b"
         >
           <td className="px-6 py-4">
-            <div className="h-4 w-28 animate-pulse rounded bg-zinc-700" />
-            <div className="mt-1 h-3 w-16 animate-pulse rounded bg-zinc-700" />
+            <div className="h-4 w-28 animate-pulse rounded bg-muted" />
+            <div className="mt-1 h-3 w-16 animate-pulse rounded bg-muted" />
           </td>
           <td className="px-6 py-4">
-            <div className="h-4 w-20 animate-pulse rounded bg-zinc-700" />
+            <div className="h-4 w-20 animate-pulse rounded bg-muted" />
           </td>
           <td className="px-6 py-4">
-            <div className="h-5 w-16 animate-pulse rounded-full bg-zinc-700" />
+            <div className="h-5 w-16 animate-pulse rounded-full bg-muted" />
           </td>
           <td className="px-6 py-4">
             <div className="flex items-center gap-2">
-              <div className="h-2 w-16 animate-pulse rounded-full bg-zinc-700" />
-              <div className="h-3 w-8 animate-pulse rounded bg-zinc-700" />
+              <div className="h-2 w-16 animate-pulse rounded-full bg-muted" />
+              <div className="h-3 w-8 animate-pulse rounded bg-muted" />
             </div>
           </td>
           <td className="px-6 py-4">
-            <div className="h-4 w-16 animate-pulse rounded bg-zinc-700" />
+            <div className="h-4 w-16 animate-pulse rounded bg-muted" />
           </td>
           <td className="px-6 py-4">
-            <div className="h-4 w-20 animate-pulse rounded bg-zinc-700" />
-            <div className="mt-1 h-3 w-16 animate-pulse rounded bg-zinc-700" />
+            <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+            <div className="mt-1 h-3 w-16 animate-pulse rounded bg-muted" />
           </td>
           <td className="px-6 py-4">
-            <div className="h-4 w-24 animate-pulse rounded bg-zinc-700" />
+            <div className="h-4 w-24 animate-pulse rounded bg-muted" />
           </td>
         </tr>
       ))}

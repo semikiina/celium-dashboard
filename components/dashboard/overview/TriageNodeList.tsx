@@ -24,7 +24,7 @@ export function TriageNodeList({ nodes, latestReadings }: TriageNodeListProps) {
   if (nodes.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="font-body text-sm text-zinc-500">No nodes found</p>
+        <p className="font-body text-sm text-muted-foreground">No nodes found</p>
       </div>
     );
   }
@@ -52,7 +52,7 @@ export function TriageNodeList({ nodes, latestReadings }: TriageNodeListProps) {
               </p>
             )}
             {showHealthy && (
-              <p className="px-4 pb-1 pt-3 font-body text-xs font-medium text-zinc-400">
+              <p className="px-4 pb-1 pt-3 font-body text-xs font-medium text-muted-foreground">
                 Healthy
               </p>
             )}

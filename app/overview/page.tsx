@@ -12,10 +12,10 @@ export default function OverviewPage() {
   return (
     <>
       <div className="px-8 pt-8">
-        <h1 className="font-heading text-3xl font-bold text-zinc-100">
+        <h1 className="font-heading text-3xl font-bold text-foreground">
           Network Overview
         </h1>
-        <p className="mt-1 font-body text-sm text-zinc-400">
+        <p className="mt-1 font-body text-sm text-muted-foreground">
           Real-time monitoring of the Celium mesh network
         </p>
       </div>

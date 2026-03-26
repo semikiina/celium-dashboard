@@ -3,7 +3,7 @@
  * Renders a tall metric tile used on the Overview page.
  * Each card has a gradient icon circle at the top, a large value,
  * a label, and a secondary subtitle line. Matches the Figma design
- * with brand-navy background and subtle blue border.
+ * with semantic background and subtle border.
  *
  * @prop icon      — React node (lucide-react icon) displayed in the gradient circle
  * @prop gradient  — CSS gradient string for the icon circle background
@@ -35,7 +35,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        'rounded-xl border border-brand-blue/20 bg-brand-navy p-6',
+        'bg-background rounded-xl border border-border p-6',
         className,
       )}
     >
@@ -46,13 +46,13 @@ export function StatCard({
         {icon}
       </div>
 
-      <p className="mt-4 font-heading text-2xl font-bold text-white">
+      <p className="mt-4 font-heading text-2xl font-bold text-foreground">
         {value}
       </p>
 
-      <p className="mt-1 font-body text-sm text-zinc-400">{label}</p>
+      <p className="mt-1 font-body text-sm text-muted-foreground">{label}</p>
 
-      <p className="mt-1 font-body text-xs text-brand-cyan">{subtitle}</p>
+      <p className="text-primary mt-1 font-body text-xs">{subtitle}</p>
     </div>
   );
 }

@@ -33,13 +33,13 @@ export function AlertBanner({ alerts }: AlertBannerProps) {
       <div className="flex items-center gap-3">
         <AlertTriangle className="size-6 shrink-0 text-red-400" />
         <div>
-          <p className="font-body text-base font-medium text-white">
+          <p className="font-body text-base font-medium text-foreground">
             {count} critical alert{count > 1 ? 's' : ''} require immediate
             attention
           </p>
           <Link
             href="/alerts"
-            className="font-body text-sm text-red-300 underline transition-colors hover:text-red-100"
+            className="font-body text-sm text-destructive underline transition-colors hover:text-destructive/80"
           >
             View all alerts &rarr;
           </Link>

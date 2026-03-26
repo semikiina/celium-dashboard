@@ -5,21 +5,19 @@
  */
 
 import type { Metadata } from 'next';
-import { Inter, Poppins } from 'next/font/google';
+import { Inter } from 'next/font/google';
+import Script from 'next/script';
 
-import { Sidebar } from '@/components/dashboard/layout/Sidebar';
-import '@/styles/globals.css';
+import { DashboardShell } from '@/components/dashboard/layout/DashboardShell';
+import { ThemeProvider } from '@/components/dashboard/layout/ThemeProvider';
+import './globals.css';
 
-const headingFont = Poppins({
+/** Inter only — use `--font-inter` (not `--font-sans`) so Tailwind’s default `--font-sans` theme token does not shadow Next.js. */
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['600', '700'],
-  variable: '--font-heading',
-});
-
-const bodyFont = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-body',
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -31,14 +29,23 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
+const themeInitScript = `(function(){try{var k='celium-theme';var t=localStorage.getItem(k);var d=document.documentElement;if(t==='light'){d.classList.remove('dark');}else{d.classList.add('dark');}}catch(e){document.documentElement.classList.add('dark');}})();`;
+
 export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
   return (
-    <html lang="en" className={`${headingFont.variable} ${bodyFont.variable}`}>
-      <body className="bg-brand-navy text-zinc-100" suppressHydrationWarning>
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto">{children}</main>
-        </div>
+    <html lang="en" suppressHydrationWarning className={inter.variable}>
+      <body
+        className={`${inter.className} bg-background text-foreground`}
+        suppressHydrationWarning
+      >
+        <Script
+          id="celium-theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeInitScript }}
+        />
+        <ThemeProvider>
+          <DashboardShell>{children}</DashboardShell>
+        </ThemeProvider>
       </body>
     </html>
   );
