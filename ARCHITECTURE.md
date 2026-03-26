@@ -43,6 +43,8 @@ celium-dashboard/
 │   └── api/
 │       ├── nodes/
 │       │   ├── route.ts            # GET /api/nodes — list all nodes
+│       │   ├── latest-readings/
+│       │   │   └── route.ts        # GET /api/nodes/latest-readings — most recent reading per node
 │       │   └── [id]/
 │       │       ├── route.ts        # GET /api/nodes/:id — single node
 │       │       └── readings/
@@ -93,6 +95,7 @@ celium-dashboard/
 │           └── AlertItem.tsx       # Single alert row with severity colour
 │
 ├── hooks/
+│   ├── useOverviewData.ts          # SWR hook — aggregates all Overview page data (nodes, stats, alerts, latest readings, KPIs)
 │   ├── useNodes.ts                 # SWR hook → GET /api/nodes
 │   ├── useNode.ts                  # SWR hook → GET /api/nodes/:id
 │   ├── useReadings.ts              # SWR hook → GET /api/nodes/:id/readings
