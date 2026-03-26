@@ -16,7 +16,7 @@ export default function OverviewPage() {
           Network Overview
         </h1>
         <p className="mt-1 font-body text-sm text-zinc-400">
-          Real-time monitoring of the ArcLoRaM mesh network
+          Real-time monitoring of the Celium mesh network
         </p>
       </div>
 
