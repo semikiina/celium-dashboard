@@ -65,7 +65,7 @@ export function NetworkHealthBar({
               {avgBatteryPct}%
             </span>
           </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-[#0a0f14]">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-brand-dark">
             <div
               className="h-full rounded-full transition-all"
               style={{
@@ -89,7 +89,7 @@ export function NetworkHealthBar({
               {avgRssi} dBm
             </span>
           </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-[#0a0f14]">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-brand-dark">
             <div
               className="h-full rounded-full transition-all"
               style={{

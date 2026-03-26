@@ -75,6 +75,7 @@ celium-dashboard/
 │       │   └── NetworkHealthBar.tsx
 │       │
 │       ├── nodes/
+│       │   ├── NodeFilterBar.tsx   # Search input + status filter button group (controlled)
 │       │   ├── NodeTable.tsx       # Sortable/filterable node list
 │       │   ├── NodeStatusBadge.tsx # online / offline / warning badge
 │       │   └── NodeCard.tsx        # Compact node summary card
@@ -294,6 +295,7 @@ export interface NetworkStats {
   onlineNodes: number;
   offlineNodes: number;
   warningNodes: number;
+  unknownNodes: number;
   activeAlerts: number;
   gatewayCount: number;
   endNodeCount: number;

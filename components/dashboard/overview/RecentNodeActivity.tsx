@@ -66,7 +66,7 @@ export function RecentNodeActivity({
             <Link
               key={node.id}
               href={`/nodes/${node.id}`}
-              className="rounded-[10px] border border-brand-blue/10 bg-[#0a0f14] p-4 transition-colors hover:border-brand-blue/30"
+              className="rounded-[10px] border border-brand-blue/10 bg-brand-dark p-4 transition-colors hover:border-brand-blue/30"
             >
               <div className="flex items-center justify-between">
                 <span className="font-body text-base font-medium text-white">
