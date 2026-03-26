@@ -22,6 +22,7 @@ export interface Node {
   lng: number | null;
   firmwareVer: string | null;
   hardwareVer: string | null;
+  batteryPct: number | null;
   deployedAt: string | null;
   lastSeenAt: string | null;
 }
