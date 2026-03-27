@@ -80,6 +80,12 @@ celium-dashboard/
 │       │   ├── NodeStatusBadge.tsx # online / offline / warning badge
 │       │   └── NodeCard.tsx        # Compact node summary card
 │       │
+│       ├── node_detail/
+│       │   ├── NodeDetailContent.tsx  # Client component shell for all Node Detail page content
+│       │   ├── NodeDetailHeader.tsx   # Back link, node name, status badge, type label
+│       │   ├── ValueCard.tsx          # Current metric value card (temperature, battery, etc.)
+│       │   └── NodeInfoCard.tsx       # Node metadata card (firmware, hardware, location, etc.)
+│       │
 │       ├── map/
 │       │   ├── NetworkMap.tsx      # react-leaflet wrapper (client component)
 │       │   ├── NodeMarker.tsx      # Custom map marker per node type

@@ -87,6 +87,18 @@ export const CRITICAL_BANNER_STYLES = {
   link: 'text-red-300 hover:text-red-100',
 } as const;
 
+/**
+ * Hex values for Recharts chart lines. Recharts requires raw hex strings
+ * rather than Tailwind classes. The first two map directly to brand tokens;
+ * the remaining two are complementary palette colours chosen for legibility
+ * on the dark background.
+ */
+export const CHART_COLOURS = {
+  blue: '#1784E3',
+  cyan: '#5DD4D8',
+  deep: '#1E3A8A',
+} as const;
+
 export const ALERT_TYPE_VALUES = {
   nodeOffline: 'node_offline',
   signalLost: 'signal_lost',
