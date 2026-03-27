@@ -74,6 +74,31 @@ export const CRITICAL_BANNER_STYLES = {
   link: 'text-red-300 hover:text-red-100',
 } as const;
 
+/**
+ * Hex values for Recharts chart lines. Recharts requires raw hex strings
+ * rather than Tailwind classes. The first two map directly to brand tokens;
+ * the remaining two are complementary palette colours chosen for legibility
+ * on the dark background.
+ */
+export const CHART_COLOURS = {
+  blue: '#1784E3',
+  cyan: '#5DD4D8',
+  deep: '#1E3A8A',
+  amber: '#F59E0B',
+  purple: '#8B5CF6',
+} as const;
+
+/**
+ * Maps NodeStatus to an uppercase display label used in the Node Detail header badge.
+ * Matches the Figma design where "online" is displayed as "ACTIVE".
+ */
+export const STATUS_DISPLAY_LABELS: Record<NodeStatus, string> = {
+  online: 'ACTIVE',
+  offline: 'OFFLINE',
+  warning: 'WARNING',
+  unknown: 'UNKNOWN',
+};
+
 export const ALERT_TYPE_VALUES = {
   nodeOffline: 'node_offline',
   signalLost: 'signal_lost',
