@@ -97,7 +97,20 @@ export const CHART_COLOURS = {
   blue: '#1784E3',
   cyan: '#5DD4D8',
   deep: '#1E3A8A',
+  amber: '#F59E0B',
+  purple: '#8B5CF6',
 } as const;
+
+/**
+ * Maps NodeStatus to an uppercase display label used in the Node Detail header badge.
+ * Matches the Figma design where "online" is displayed as "ACTIVE".
+ */
+export const STATUS_DISPLAY_LABELS: Record<NodeStatus, string> = {
+  online: 'ACTIVE',
+  offline: 'OFFLINE',
+  warning: 'WARNING',
+  unknown: 'UNKNOWN',
+};
 
 export const ALERT_TYPE_VALUES = {
   nodeOffline: 'node_offline',

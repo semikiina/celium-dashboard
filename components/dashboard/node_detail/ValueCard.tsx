@@ -1,13 +1,15 @@
 /**
  * ValueCard
- * Displays a single current metric value inside a compact card.
- * Used on the Node Detail page to show the latest reading for temperature,
- * humidity, pressure, battery, signal strength, etc.
+ * Displays a single current sensor metric inside a card with a coloured
+ * icon circle. Used on the Node Detail page for Temperature, Humidity,
+ * and Pressure readings. Layout matches Figma Page 5 — a 48px coloured
+ * icon container on the left, metric label + bold value on the right.
  *
- * @prop label — metric label (e.g. "Temperature")
- * @prop value — formatted display value (e.g. "14.5°C")
- * @prop icon  — React node (lucide-react icon) rendered beside the label
- * @prop className — optional extra Tailwind classes
+ * @prop label          — metric label (e.g. "Temperature")
+ * @prop value          — formatted display value (e.g. "-12.9°C")
+ * @prop icon           — React node (lucide-react icon) rendered inside the colour circle
+ * @prop iconColorClass — Tailwind bg + text classes for the icon circle (e.g. "bg-red-500/20 text-red-400")
+ * @prop className      — optional extra Tailwind classes
  */
 
 import { type ReactNode } from 'react';
@@ -17,24 +19,38 @@ interface ValueCardProps {
   label: string;
   value: string;
   icon: ReactNode;
+  iconColorClass: string;
   className?: string;
 }
 
-export function ValueCard({ label, value, icon, className }: ValueCardProps) {
+export function ValueCard({
+  label,
+  value,
+  icon,
+  iconColorClass,
+  className,
+}: ValueCardProps) {
   return (
     <div
       className={cn(
-        'rounded-xl border border-zinc-700 bg-zinc-900 p-5',
+        'flex items-center gap-4 rounded-xl border border-zinc-700 bg-zinc-900 px-6 py-6',
         className,
       )}
     >
-      <div className="flex items-center gap-2 text-zinc-400">
-        <span className="shrink-0 [&>svg]:size-4">{icon}</span>
-        <span className="font-body text-sm font-medium">{label}</span>
+      <div
+        className={cn(
+          'flex size-12 shrink-0 items-center justify-center rounded-xl',
+          iconColorClass,
+        )}
+      >
+        <span className="[&>svg]:size-6">{icon}</span>
       </div>
-      <p className="mt-2 font-heading text-2xl font-bold text-zinc-100">
-        {value}
-      </p>
+      <div className="min-w-0">
+        <p className="font-body text-sm text-zinc-400">{label}</p>
+        <p className="mt-0.5 font-heading text-xl font-bold text-zinc-100">
+          {value}
+        </p>
+      </div>
     </div>
   );
 }

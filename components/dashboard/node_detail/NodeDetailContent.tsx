@@ -3,32 +3,31 @@
 /**
  * NodeDetailContent
  * Client component that fetches and renders all interactive content for
- * the Node Detail page. Composes NodeDetailHeader, ValueCard strip,
- * NodeInfoCard, and SensorLineChart panels.
+ * the Node Detail page. Matches Figma Page 5 layout:
  *
- * Layout:
- *   1. Header (back link, name, status, type)
- *   2. Value cards strip (6 metrics: temp, humidity, pressure, battery, RSSI, hops)
- *   3. Two-column layout: Node Info (left) + charts (right)
- *   4. Charts: Temperature, Humidity, Pressure, Battery over time
+ *   1. Back link
+ *   2. Header card (name, status badge, external ID, 4 info pills)
+ *   3. Three sensor value cards (Temperature, Humidity, Pressure)
+ *   4. Temperature & Humidity dual-axis line chart
+ *   5. Atmospheric Pressure area chart
+ *   6. Battery & Signal Strength dual-axis line chart
  *
  * @prop nodeId — the UUID of the node to display
  */
 
+import Link from 'next/link';
 import {
+  ArrowLeft,
   Thermometer,
   Droplets,
   Gauge,
-  Battery,
-  Signal,
-  Route,
 } from 'lucide-react';
 import { useNode } from '@/hooks/useNode';
 import { useReadings } from '@/hooks/useReadings';
 import { CHART_COLOURS } from '@/lib/constants';
 import { NodeDetailHeader } from '@/components/dashboard/node_detail/NodeDetailHeader';
 import { ValueCard } from '@/components/dashboard/node_detail/ValueCard';
-import { NodeInfoCard } from '@/components/dashboard/node_detail/NodeInfoCard';
+import { DualAxisChart } from '@/components/dashboard/charts/DualAxisChart';
 import { SensorLineChart } from '@/components/dashboard/charts/SensorLineChart';
 
 interface NodeDetailContentProps {
@@ -53,22 +52,18 @@ export function NodeDetailContent({ nodeId }: NodeDetailContentProps) {
     return (
       <div className="space-y-6 p-8">
         <div className="h-6 w-32 animate-pulse rounded bg-zinc-800" />
-        <div className="h-12 w-72 animate-pulse rounded-lg bg-zinc-800" />
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {Array.from({ length: 6 }).map((_, i) => (
+        <div className="h-48 animate-pulse rounded-xl bg-zinc-800" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className="h-24 animate-pulse rounded-xl bg-zinc-800"
+              className="h-[118px] animate-pulse rounded-xl bg-zinc-800"
             />
           ))}
         </div>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="h-96 animate-pulse rounded-xl bg-zinc-800" />
-          <div className="col-span-2 space-y-6">
-            <div className="h-72 animate-pulse rounded-xl bg-zinc-800" />
-            <div className="h-72 animate-pulse rounded-xl bg-zinc-800" />
-          </div>
-        </div>
+        <div className="h-[394px] animate-pulse rounded-xl bg-zinc-800" />
+        <div className="h-[394px] animate-pulse rounded-xl bg-zinc-800" />
+        <div className="h-[394px] animate-pulse rounded-xl bg-zinc-800" />
       </div>
     );
   }
@@ -77,98 +72,107 @@ export function NodeDetailContent({ nodeId }: NodeDetailContentProps) {
 
   return (
     <div className="space-y-6 p-8">
+      {/* Back link */}
+      <Link
+        href="/nodes"
+        className="inline-flex items-center gap-1.5 font-body text-sm text-zinc-400 transition-colors hover:text-brand-cyan"
+      >
+        <ArrowLeft className="size-4" />
+        Back to Nodes
+      </Link>
+
+      {/* Header card */}
       <NodeDetailHeader
         name={node.name}
         status={node.status}
         type={node.type}
+        externalId={node.externalId}
+        batteryPct={r?.batteryPct ?? node.batteryPct ?? null}
+        rssi={r?.rssi ?? null}
+        lat={node.lat}
+        lng={node.lng}
+        lastSeenAt={node.lastSeenAt}
       />
 
-      {/* Current value cards */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+      {/* Sensor value cards — 3 across */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <ValueCard
           label="Temperature"
-          value={r?.temperature !== null && r?.temperature !== undefined ? `${r.temperature.toFixed(1)}°C` : '—'}
+          value={
+            r?.temperature !== null && r?.temperature !== undefined
+              ? `${r.temperature.toFixed(1)}°C`
+              : '—'
+          }
           icon={<Thermometer />}
+          iconColorClass="bg-red-500/20 text-red-400"
         />
         <ValueCard
           label="Humidity"
-          value={r?.humidity !== null && r?.humidity !== undefined ? `${r.humidity.toFixed(1)}%` : '—'}
+          value={
+            r?.humidity !== null && r?.humidity !== undefined
+              ? `${r.humidity.toFixed(0)}%`
+              : '—'
+          }
           icon={<Droplets />}
+          iconColorClass="bg-brand-blue/20 text-brand-blue"
         />
         <ValueCard
           label="Pressure"
-          value={r?.pressure !== null && r?.pressure !== undefined ? `${r.pressure.toFixed(0)} hPa` : '—'}
+          value={
+            r?.pressure !== null && r?.pressure !== undefined
+              ? `${r.pressure.toFixed(1)} hPa`
+              : '—'
+          }
           icon={<Gauge />}
-        />
-        <ValueCard
-          label="Battery"
-          value={r?.batteryPct !== null && r?.batteryPct !== undefined ? `${r.batteryPct}%` : '—'}
-          icon={<Battery />}
-        />
-        <ValueCard
-          label="Signal"
-          value={r?.rssi !== null && r?.rssi !== undefined ? `${r.rssi} dBm` : '—'}
-          icon={<Signal />}
-        />
-        <ValueCard
-          label="Hop Count"
-          value={r?.hopCount !== null && r?.hopCount !== undefined ? `${r.hopCount}` : '—'}
-          icon={<Route />}
+          iconColorClass="bg-purple-500/20 text-purple-400"
         />
       </div>
 
-      {/* Info card + charts */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <NodeInfoCard
-          firmwareVer={node.firmwareVer}
-          hardwareVer={node.hardwareVer}
-          lat={node.lat}
-          lng={node.lng}
-          deployedAt={node.deployedAt}
-          lastSeenAt={node.lastSeenAt}
-          externalId={node.externalId}
-        />
-
-        <div className="col-span-1 space-y-6 lg:col-span-2">
-          {readingsLoading ? (
-            <div className="space-y-6">
-              <div className="h-72 animate-pulse rounded-xl bg-zinc-800" />
-              <div className="h-72 animate-pulse rounded-xl bg-zinc-800" />
-            </div>
-          ) : (
-            <>
-              <SensorLineChart
-                title="Temperature Over Time"
-                data={readings}
-                dataKey="temperature"
-                unit="°C"
-                color={CHART_COLOURS.blue}
-              />
-              <SensorLineChart
-                title="Humidity Over Time"
-                data={readings}
-                dataKey="humidity"
-                unit="%"
-                color={CHART_COLOURS.cyan}
-              />
-              <SensorLineChart
-                title="Atmospheric Pressure"
-                data={readings}
-                dataKey="pressure"
-                unit=" hPa"
-                color={CHART_COLOURS.cyan}
-              />
-              <SensorLineChart
-                title="Battery Level"
-                data={readings}
-                dataKey="batteryPct"
-                unit="%"
-                color={CHART_COLOURS.blue}
-              />
-            </>
-          )}
+      {/* Charts — full width, stacked */}
+      {readingsLoading ? (
+        <div className="space-y-6">
+          <div className="h-[394px] animate-pulse rounded-xl bg-zinc-800" />
+          <div className="h-[394px] animate-pulse rounded-xl bg-zinc-800" />
+          <div className="h-[394px] animate-pulse rounded-xl bg-zinc-800" />
         </div>
-      </div>
+      ) : (
+        <>
+          <DualAxisChart
+            title="Temperature & Humidity"
+            data={readings}
+            leftKey="temperature"
+            rightKey="humidity"
+            leftLabel="Temperature (°C)"
+            rightLabel="Humidity (%)"
+            leftUnit="°C"
+            rightUnit="%"
+            leftColor={CHART_COLOURS.cyan}
+            rightColor={CHART_COLOURS.blue}
+          />
+
+          <SensorLineChart
+            title="Atmospheric Pressure"
+            data={readings}
+            dataKey="pressure"
+            unit=" hPa"
+            color={CHART_COLOURS.purple}
+            variant="area"
+          />
+
+          <DualAxisChart
+            title="Battery & Signal Strength"
+            data={readings}
+            leftKey="batteryPct"
+            rightKey="rssi"
+            leftLabel="Battery (%)"
+            rightLabel="Signal (dBm)"
+            leftUnit="%"
+            rightUnit=" dBm"
+            leftColor={CHART_COLOURS.amber}
+            rightColor={CHART_COLOURS.cyan}
+          />
+        </>
+      )}
     </div>
   );
 }

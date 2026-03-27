@@ -2,21 +2,27 @@
 
 /**
  * SensorLineChart
- * Renders a Recharts-based time-series line chart for a single sensor metric.
- * Generic and reusable across any page that needs to plot Reading data over time.
+ * Renders a Recharts-based time-series chart for a single sensor metric.
+ * Supports two variants:
+ *   - "line" (default) — simple line chart
+ *   - "area" — area chart with a vertical gradient fill
  *
- * @prop title    — chart heading (e.g. "Temperature Over Time")
- * @prop data     — array of readings, must be sorted by timestamp ascending
- * @prop dataKey  — the Reading field to plot on the Y axis (e.g. "temperature")
- * @prop unit     — unit string appended to tooltip/axis values (e.g. "°C")
- * @prop color    — stroke colour for the line (use CHART_COLOURS from constants)
+ * @prop title     — chart heading (e.g. "Temperature Over Time")
+ * @prop data      — array of readings, must be sorted by timestamp ascending
+ * @prop dataKey   — the Reading field to plot on the Y axis (e.g. "temperature")
+ * @prop unit      — unit string appended to tooltip/axis values (e.g. "°C")
+ * @prop color     — stroke colour for the line (use CHART_COLOURS from constants)
+ * @prop variant   — "line" (default) or "area" for gradient-filled area chart
  * @prop className — optional extra Tailwind classes
  */
 
+import { useId } from 'react';
 import {
   ResponsiveContainer,
   LineChart,
+  AreaChart,
   Line,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
@@ -30,6 +36,7 @@ interface SensorLineChartProps {
   dataKey: keyof Reading;
   unit: string;
   color: string;
+  variant?: 'line' | 'area';
   className?: string;
 }
 
@@ -48,6 +55,9 @@ function formatShortTime(iso: string): string {
   return d.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
   });
 }
 
@@ -85,9 +95,42 @@ export function SensorLineChart({
   dataKey,
   unit,
   color,
+  variant = 'line',
   className,
 }: SensorLineChartProps) {
+  const gradientId = useId();
   const filtered = data.filter((r) => r[dataKey] !== null);
+
+  const sharedAxisProps = {
+    stroke: '#52525b' as const,
+    tick: { fill: '#71717a', fontSize: 11 },
+    tickLine: false as const,
+    axisLine: false as const,
+  };
+
+  const chartContent = (
+    <>
+      <CartesianGrid
+        strokeDasharray="3 3"
+        stroke="#27272a"
+        vertical={false}
+      />
+      <XAxis
+        dataKey="timestamp"
+        tickFormatter={formatShortTime}
+        {...sharedAxisProps}
+      />
+      <YAxis
+        tickFormatter={(v: number) => `${v}${unit}`}
+        width={65}
+        {...sharedAxisProps}
+      />
+      <Tooltip
+        content={<CustomTooltip unit={unit} />}
+        cursor={{ stroke: '#3f3f46', strokeDasharray: '4 4' }}
+      />
+    </>
+  );
 
   return (
     <div
@@ -98,39 +141,36 @@ export function SensorLineChart({
       </h3>
 
       {filtered.length === 0 ? (
-        <div className="flex h-[220px] items-center justify-center">
+        <div className="flex h-[300px] items-center justify-center">
           <p className="font-body text-sm text-zinc-500">
             No data available for this metric
           </p>
         </div>
+      ) : variant === 'area' ? (
+        <ResponsiveContainer width="100%" height={300}>
+          <AreaChart data={filtered}>
+            <defs>
+              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={color} stopOpacity={0.4} />
+                <stop offset="100%" stopColor={color} stopOpacity={0.05} />
+              </linearGradient>
+            </defs>
+            {chartContent}
+            <Area
+              type="monotone"
+              dataKey={dataKey as string}
+              stroke={color}
+              strokeWidth={2}
+              fill={`url(#${gradientId})`}
+              dot={false}
+              activeDot={{ r: 4, fill: color, stroke: '#18181b', strokeWidth: 2 }}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       ) : (
-        <ResponsiveContainer width="100%" height={220}>
+        <ResponsiveContainer width="100%" height={300}>
           <LineChart data={filtered}>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="#27272a"
-              vertical={false}
-            />
-            <XAxis
-              dataKey="timestamp"
-              tickFormatter={formatShortTime}
-              stroke="#52525b"
-              tick={{ fill: '#71717a', fontSize: 11 }}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis
-              stroke="#52525b"
-              tick={{ fill: '#71717a', fontSize: 11 }}
-              tickLine={false}
-              axisLine={false}
-              tickFormatter={(v: number) => `${v}${unit}`}
-              width={60}
-            />
-            <Tooltip
-              content={<CustomTooltip unit={unit} />}
-              cursor={{ stroke: '#3f3f46', strokeDasharray: '4 4' }}
-            />
+            {chartContent}
             <Line
               type="monotone"
               dataKey={dataKey as string}

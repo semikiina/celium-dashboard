@@ -92,7 +92,8 @@ celium-dashboard/
 │       │   └── ClusterOverlay.tsx  # Visual grouping of gateway + end nodes
 │       │
 │       ├── charts/
-│       │   ├── SensorLineChart.tsx # Generic time-series line chart (Recharts)
+│       │   ├── SensorLineChart.tsx # Generic time-series line/area chart (Recharts)
+│       │   ├── DualAxisChart.tsx   # Dual-axis line chart for two-metric panels
 │       │   ├── BatteryGauge.tsx    # Battery level visual
 │       │   └── SignalStrengthBar.tsx
 │       │
