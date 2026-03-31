@@ -10,33 +10,27 @@
 
 import Link from 'next/link';
 import { AlertTriangle } from 'lucide-react';
-import { Alert, Node } from '@/types';
-import { ALERT_SEVERITY_VALUES } from '@/lib/constants';
+import { Alert, Node, type AlertSeverity } from '@/types';
+import { ALERT_SEVERITY_COLOURS, ALERT_SEVERITY_VALUES } from '@/lib/constants';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 interface RecentAlertsProps {
   alerts: Alert[];
   nodes: Node[];
 }
 
-const SEVERITY_BADGE: Record<string, { bg: string; border: string; text: string; label: string }> = {
-  [ALERT_SEVERITY_VALUES.critical]: {
-    bg: 'bg-red-500/20',
-    border: 'border-red-500/30',
-    text: 'text-red-300',
-    label: 'CRITICAL',
-  },
-  [ALERT_SEVERITY_VALUES.warning]: {
-    bg: 'bg-orange-500/20',
-    border: 'border-orange-500/30',
-    text: 'text-orange-300',
-    label: 'HIGH',
-  },
-  [ALERT_SEVERITY_VALUES.info]: {
-    bg: 'bg-primary/20',
-    border: 'border-primary/30',
-    text: 'text-primary',
-    label: 'INFO',
-  },
+const SEVERITY_LABEL: Record<AlertSeverity, string> = {
+  [ALERT_SEVERITY_VALUES.critical]: 'CRITICAL',
+  [ALERT_SEVERITY_VALUES.warning]: 'HIGH',
+  [ALERT_SEVERITY_VALUES.info]: 'INFO',
 };
 
 function formatAlertTime(iso: string): string {
@@ -54,29 +48,27 @@ export function RecentAlerts({ alerts, nodes }: RecentAlertsProps) {
   const recentAlerts = alerts.slice(0, 3);
 
   return (
-    <div className="bg-background rounded-xl border border-border p-6">
-      <div className="flex items-center justify-between">
-        <h2 className="font-heading text-xl font-bold text-foreground">
+    <Card className="gap-0 rounded-xl border border-border bg-background py-0 shadow-none ring-0">
+      <CardHeader className="flex flex-row items-center justify-between gap-2 px-6 pb-0 pt-6">
+        <CardTitle className="font-heading text-xl font-bold text-foreground">
           Recent Alerts
-        </h2>
-        <Link
-          href="/alerts"
-          className="font-body text-primary text-sm transition-colors hover:text-primary/80"
-        >
-          View all &rarr;
-        </Link>
-      </div>
-
-      <div className="mt-4 space-y-3">
+        </CardTitle>
+        <Button variant="link" asChild className="h-auto p-0 font-body text-sm text-primary">
+          <Link href="/alerts">View all &rarr;</Link>
+        </Button>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3 px-6 pb-6 pt-4">
         {recentAlerts.length === 0 ? (
           <p className="py-8 text-center font-body text-sm text-muted-foreground">
             No active alerts
           </p>
         ) : (
           recentAlerts.map((alert) => {
-            const badge = SEVERITY_BADGE[alert.severity] ?? SEVERITY_BADGE.info;
+            const severityKey = alert.severity;
+            const badgeClass = ALERT_SEVERITY_COLOURS[severityKey];
+            const label = SEVERITY_LABEL[severityKey];
             const nodeName = alert.nodeId
-              ? nodeMap.get(alert.nodeId) ?? 'Unknown Node'
+              ? (nodeMap.get(alert.nodeId) ?? 'Unknown Node')
               : 'System';
 
             return (
@@ -87,12 +79,16 @@ export function RecentAlerts({ alerts, nodes }: RecentAlertsProps) {
                 <div className="flex items-start gap-3">
                   <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red-400" />
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`inline-block rounded-full border px-2 py-0.5 font-body text-xs font-medium ${badge.bg} ${badge.border} ${badge.text}`}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          'h-auto rounded-full border px-2 py-0.5 font-body text-xs font-medium uppercase shadow-none',
+                          badgeClass,
+                        )}
                       >
-                        {badge.label}
-                      </span>
+                        {label}
+                      </Badge>
                       <span className="font-body text-xs text-muted-foreground">
                         {formatAlertTime(alert.createdAt)}
                       </span>
@@ -109,7 +105,7 @@ export function RecentAlerts({ alerts, nodes }: RecentAlertsProps) {
             );
           })
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

@@ -9,6 +9,15 @@ export type NodeStatus = 'online' | 'offline' | 'warning' | 'unknown';
 export type AlertSeverity = 'info' | 'warning' | 'critical';
 
 /**
+ * Nodes page status filter. MVP UI omits `unknown` from the dropdown; values
+ * still align with {@link NodeStatus} for the non-`all` branch.
+ */
+export type NodeListStatusFilter = 'all' | 'online' | 'offline' | 'warning';
+
+/** Nodes page type filter: all classes or a single {@link NodeType}. */
+export type NodeListTypeFilter = 'all' | NodeType;
+
+/**
  * Represents a single network node in the Celium mesh.
  */
 export interface Node {

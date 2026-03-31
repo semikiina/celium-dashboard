@@ -14,6 +14,7 @@
 
 import { type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface ValueCardProps {
   label: string;
@@ -31,26 +32,28 @@ export function ValueCard({
   className,
 }: ValueCardProps) {
   return (
-    <div
+    <Card
       className={cn(
-        'flex items-center gap-4 rounded-xl border border-zinc-700 bg-zinc-900 px-6 py-6',
+        'gap-0 rounded-xl border border-border bg-card py-0 shadow-none ring-0',
         className,
       )}
     >
-      <div
-        className={cn(
-          'flex size-12 shrink-0 items-center justify-center rounded-xl',
-          iconColorClass,
-        )}
-      >
-        <span className="[&>svg]:size-6">{icon}</span>
-      </div>
-      <div className="min-w-0">
-        <p className="font-body text-sm text-zinc-400">{label}</p>
-        <p className="mt-0.5 font-heading text-xl font-bold text-zinc-100">
-          {value}
-        </p>
-      </div>
-    </div>
+      <CardContent className="flex items-center gap-4 p-6">
+        <div
+          className={cn(
+            'flex size-12 shrink-0 items-center justify-center rounded-xl',
+            iconColorClass,
+          )}
+        >
+          <span className="[&>svg]:size-6">{icon}</span>
+        </div>
+        <div className="min-w-0">
+          <p className="font-body text-sm text-muted-foreground">{label}</p>
+          <p className="mt-0.5 font-heading text-xl font-bold text-foreground">
+            {value}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

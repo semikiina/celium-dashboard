@@ -18,19 +18,13 @@
 
 import Link from 'next/link';
 import { Node, Reading } from '@/types';
-import { NODE_TYPE_SHORT } from '@/lib/constants';
+import { NODE_TYPE_SHORT, getBatteryBarFillClass } from '@/lib/constants';
 import { cn, formatRelativeTime } from '@/lib/utils';
 import { NodeStatusBadge } from '@/components/dashboard/nodes/NodeStatusBadge';
 
 interface NodeRowProps {
   node: Node;
   latestReading?: Reading;
-}
-
-function getBatteryColour(pct: number): string {
-  if (pct >= 50) return 'bg-green-500';
-  if (pct >= 20) return 'bg-amber-500';
-  return 'bg-red-500';
 }
 
 export function NodeRow({ node, latestReading }: NodeRowProps) {
@@ -83,7 +77,10 @@ export function NodeRow({ node, latestReading }: NodeRowProps) {
           <>
             <div className="bg-muted h-2 flex-1 overflow-hidden rounded-full">
               <div
-                className={cn('h-full rounded-full', getBatteryColour(batteryPct))}
+                className={cn(
+                  'h-full rounded-full',
+                  getBatteryBarFillClass(batteryPct),
+                )}
                 style={{ width: `${Math.min(Math.max(batteryPct, 0), 100)}%` }}
               />
             </div>

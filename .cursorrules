@@ -78,7 +78,7 @@ After completing the task and all checks pass, provide a short summary covering:
 |---|---|
 | Framework | Next.js 14, App Router only (no Pages Router) |
 | Language | TypeScript — strict mode, no `any` |
-| Styling | Tailwind CSS utility classes only — no inline `style={}` |
+| Styling | Tailwind CSS utility classes — inline `style={}` only where documented in Styling Rules |
 | UI primitives | shadcn/ui — import from `@/components/ui/` |
 | Charts | Recharts |
 | Map | react-leaflet |
@@ -229,6 +229,7 @@ export function useNodes() {
 
 - Status colours live in `lib/constants.ts` as a map keyed by `NodeStatus`. Never hardcode status colours.
 - Use `cn()` from `@/lib/utils` for conditional class merging.
+- **Inline styles (narrow exception):** use `style={{ width: '…' }}` (or an equivalent CSS variable for width) only for **runtime-computed percentages** that Tailwind cannot enumerate (e.g. battery/RSSI bar fills, `w-[var(--x)]` with `--x` set inline). Prefer centralising bar colours in `lib/constants.ts`. Do not use inline styles for colours, typography, or static layout.
 
 ## Typography Rules
 

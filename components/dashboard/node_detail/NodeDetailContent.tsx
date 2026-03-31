@@ -8,9 +8,7 @@
  *   1. Back link
  *   2. Header card (name, status badge, external ID, 4 info pills)
  *   3. Three sensor value cards (Temperature, Humidity, Pressure)
- *   4. Temperature & Humidity dual-axis line chart
- *   5. Atmospheric Pressure area chart
- *   6. Battery & Signal Strength dual-axis line chart
+ *   4–6. Three chart panels via NodeDetailCharts (shadcn Card + Chart)
  *
  * @prop nodeId — the UUID of the node to display
  */
@@ -24,11 +22,9 @@ import {
 } from 'lucide-react';
 import { useNode } from '@/hooks/useNode';
 import { useReadings } from '@/hooks/useReadings';
-import { CHART_COLOURS } from '@/lib/constants';
 import { NodeDetailHeader } from '@/components/dashboard/node_detail/NodeDetailHeader';
+import { NodeDetailCharts } from '@/components/dashboard/node_detail/NodeDetailCharts';
 import { ValueCard } from '@/components/dashboard/node_detail/ValueCard';
-import { DualAxisChart } from '@/components/dashboard/charts/DualAxisChart';
-import { SensorLineChart } from '@/components/dashboard/charts/SensorLineChart';
 
 interface NodeDetailContentProps {
   nodeId: string;
@@ -128,51 +124,8 @@ export function NodeDetailContent({ nodeId }: NodeDetailContentProps) {
         />
       </div>
 
-      {/* Charts — full width, stacked */}
-      {readingsLoading ? (
-        <div className="space-y-6">
-          <div className="h-[394px] animate-pulse rounded-xl bg-zinc-800" />
-          <div className="h-[394px] animate-pulse rounded-xl bg-zinc-800" />
-          <div className="h-[394px] animate-pulse rounded-xl bg-zinc-800" />
-        </div>
-      ) : (
-        <>
-          <DualAxisChart
-            title="Temperature & Humidity"
-            data={readings}
-            leftKey="temperature"
-            rightKey="humidity"
-            leftLabel="Temperature (°C)"
-            rightLabel="Humidity (%)"
-            leftUnit="°C"
-            rightUnit="%"
-            leftColor={CHART_COLOURS.cyan}
-            rightColor={CHART_COLOURS.blue}
-          />
-
-          <SensorLineChart
-            title="Atmospheric Pressure"
-            data={readings}
-            dataKey="pressure"
-            unit=" hPa"
-            color={CHART_COLOURS.purple}
-            variant="area"
-          />
-
-          <DualAxisChart
-            title="Battery & Signal Strength"
-            data={readings}
-            leftKey="batteryPct"
-            rightKey="rssi"
-            leftLabel="Battery (%)"
-            rightLabel="Signal (dBm)"
-            leftUnit="%"
-            rightUnit=" dBm"
-            leftColor={CHART_COLOURS.amber}
-            rightColor={CHART_COLOURS.cyan}
-          />
-        </>
-      )}
+      {/* Charts — full width, stacked (shadcn Card + Chart) */}
+      <NodeDetailCharts readings={readings} isLoading={readingsLoading} />
     </div>
   );
 }

@@ -13,7 +13,15 @@
 import Link from 'next/link';
 import { AlertTriangle } from 'lucide-react';
 import { Alert } from '@/types';
-import { ALERT_SEVERITY_VALUES } from '@/lib/constants';
+import {
+  ALERT_SEVERITY_VALUES,
+  CRITICAL_BANNER_STYLES,
+} from '@/lib/constants';
+import {
+  Alert as AlertUI,
+  AlertDescription,
+  AlertTitle,
+} from '@/components/ui/alert';
 
 interface AlertBannerProps {
   alerts: Alert[];
@@ -29,22 +37,17 @@ export function AlertBanner({ alerts }: AlertBannerProps) {
   const count = criticalAlerts.length;
 
   return (
-    <div className="rounded-xl border border-red-500/50 bg-gradient-to-r from-red-500/20 to-red-600/20 px-5 py-4">
-      <div className="flex items-center gap-3">
-        <AlertTriangle className="size-6 shrink-0 text-red-400" />
-        <div>
-          <p className="font-body text-base font-medium text-foreground">
-            {count} critical alert{count > 1 ? 's' : ''} require immediate
-            attention
-          </p>
-          <Link
-            href="/alerts"
-            className="font-body text-sm text-destructive underline transition-colors hover:text-destructive/80"
-          >
-            View all alerts &rarr;
-          </Link>
-        </div>
-      </div>
-    </div>
+    <AlertUI className={CRITICAL_BANNER_STYLES.alert} variant="default">
+      <AlertTriangle />
+      <AlertTitle className={CRITICAL_BANNER_STYLES.title}>
+        {count} critical alert{count > 1 ? 's' : ''} require immediate
+        attention
+      </AlertTitle>
+      <AlertDescription className="mt-0">
+        <Link href="/alerts" className={CRITICAL_BANNER_STYLES.link}>
+          View all alerts &rarr;
+        </Link>
+      </AlertDescription>
+    </AlertUI>
   );
 }

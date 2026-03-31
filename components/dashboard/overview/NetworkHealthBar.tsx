@@ -17,6 +17,15 @@
  */
 
 import { Battery, Signal } from 'lucide-react';
+import { NETWORK_HEALTH_BAR_FILL_CLASS } from '@/lib/constants';
+import { cn } from '@/lib/utils';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 interface NetworkHealthBarProps {
   avgBatteryPct: number;
@@ -32,9 +41,6 @@ function rssiToPercent(rssi: number): number {
   return Math.round(((clamped + 120) / 90) * 100);
 }
 
-const BAR_GRADIENT =
-  'linear-gradient(90deg, #1784E3, #5DD4D8)';
-
 export function NetworkHealthBar({
   avgBatteryPct,
   avgRssi,
@@ -46,14 +52,14 @@ export function NetworkHealthBar({
   const rssiPct = rssiToPercent(avgRssi);
 
   return (
-    <div className="bg-background rounded-xl border border-border p-6">
-      <h2 className="font-heading text-xl font-bold text-foreground">
-        Network Health
-      </h2>
-
-      <div className="mt-5 space-y-4">
-        {/* Average Battery */}
-        <div className="space-y-2">
+    <Card className="gap-0 rounded-xl border border-border bg-background py-0 shadow-none ring-0">
+      <CardHeader className="px-6 pb-0 pt-6">
+        <CardTitle className="font-heading text-xl font-bold text-foreground">
+          Network Health
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4 px-6 pb-6 pt-5">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Battery className="size-4 text-muted-foreground" />
@@ -67,17 +73,18 @@ export function NetworkHealthBar({
           </div>
           <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
             <div
-              className="h-full rounded-full transition-all"
+              className={cn(
+                'h-full rounded-full transition-all',
+                NETWORK_HEALTH_BAR_FILL_CLASS,
+              )}
               style={{
                 width: `${Math.min(Math.max(avgBatteryPct, 0), 100)}%`,
-                backgroundImage: BAR_GRADIENT,
               }}
             />
           </div>
         </div>
 
-        {/* Signal Strength */}
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Signal className="size-4 text-muted-foreground" />
@@ -91,24 +98,41 @@ export function NetworkHealthBar({
           </div>
           <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
             <div
-              className="h-full rounded-full transition-all"
-              style={{
-                width: `${rssiPct}%`,
-                backgroundImage: BAR_GRADIENT,
-              }}
+              className={cn(
+                'h-full rounded-full transition-all',
+                NETWORK_HEALTH_BAR_FILL_CLASS,
+              )}
+              style={{ width: `${rssiPct}%` }}
             />
           </div>
         </div>
-      </div>
 
-      {/* Status counts */}
-      <div className="border-border mt-6 grid grid-cols-4 gap-2 border-t pt-5">
-        <StatusCount value={activeCount} label="Active" color="text-emerald-400" />
-        <StatusCount value={warningCount} label="Warning" color="text-amber-400" />
-        <StatusCount value={criticalAlerts} label="Critical" color="text-red-400" />
-        <StatusCount value={offlineCount} label="Offline" color="text-muted-foreground" />
-      </div>
-    </div>
+        <Separator />
+
+        <div className="grid grid-cols-4 gap-2">
+          <StatusCount
+            value={activeCount}
+            label="Active"
+            color="text-emerald-400"
+          />
+          <StatusCount
+            value={warningCount}
+            label="Warning"
+            color="text-amber-400"
+          />
+          <StatusCount
+            value={criticalAlerts}
+            label="Critical"
+            color="text-red-400"
+          />
+          <StatusCount
+            value={offlineCount}
+            label="Offline"
+            color="text-muted-foreground"
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -121,7 +145,7 @@ interface StatusCountProps {
 function StatusCount({ value, label, color }: StatusCountProps) {
   return (
     <div className="text-center">
-      <p className={`font-heading text-2xl font-bold ${color}`}>{value}</p>
+      <p className={cn('font-heading text-2xl font-bold', color)}>{value}</p>
       <p className="font-body text-xs text-muted-foreground">{label}</p>
     </div>
   );
