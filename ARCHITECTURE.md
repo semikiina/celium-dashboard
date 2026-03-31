@@ -88,6 +88,7 @@ celium-dashboard/
 │       │
 │       ├── node_detail/
 │       │   ├── NodeDetailContent.tsx  # Client component shell for all Node Detail page content
+│       │   ├── NodeDetailCharts.tsx   # Three sensor charts (shadcn Card + Chart + Recharts)
 │       │   ├── NodeDetailHeader.tsx   # Back link, node name, status badge, type label
 │       │   ├── ValueCard.tsx          # Current metric value card (temperature, battery, etc.)
 │       │   └── NodeInfoCard.tsx       # Node metadata card (firmware, hardware, location, etc.)
@@ -98,8 +99,6 @@ celium-dashboard/
 │       │   └── ClusterOverlay.tsx  # Visual grouping of gateway + end nodes
 │       │
 │       ├── charts/
-│       │   ├── SensorLineChart.tsx # Generic time-series line/area chart (Recharts)
-│       │   ├── DualAxisChart.tsx   # Dual-axis line chart for two-metric panels
 │       │   ├── BatteryGauge.tsx    # Battery level visual
 │       │   └── SignalStrengthBar.tsx
 │       │
