@@ -12,6 +12,7 @@
  */
 
 import { Activity, AlertTriangle, MapPin, Radio } from 'lucide-react';
+import { STAT_CARD_ICON_GRADIENT_CLASSES } from '@/lib/constants';
 import { StatCard } from '@/components/dashboard/overview/StatCard';
 
 interface StatCardStripProps {
@@ -21,15 +22,6 @@ interface StatCardStripProps {
   alertCount: number;
   criticalAlertCount: number;
 }
-
-const GRADIENT_CYAN_BLUE =
-  'linear-gradient(135deg, #5DD4D8, #1784E3)';
-const GRADIENT_GREEN =
-  'linear-gradient(135deg, #00BC7D, #009966)';
-const GRADIENT_RED =
-  'linear-gradient(135deg, #FB2C36, #E7000B)';
-const GRADIENT_BLUE =
-  'linear-gradient(135deg, #1784E3, rgba(23,132,227,0.7))';
 
 export function StatCardStrip({
   totalNodes,
@@ -47,7 +39,7 @@ export function StatCardStrip({
     <div className="grid grid-cols-4 gap-6">
       <StatCard
         icon={<Radio />}
-        gradient={GRADIENT_CYAN_BLUE}
+        iconClassName={STAT_CARD_ICON_GRADIENT_CLASSES.cyanBlue}
         value={totalNodes}
         label="Total Nodes"
         subtitle={`${onlineNodes} active, ${offlineNodes} offline`}
@@ -55,7 +47,7 @@ export function StatCardStrip({
 
       <StatCard
         icon={<Activity />}
-        gradient={GRADIENT_GREEN}
+        iconClassName={STAT_CARD_ICON_GRADIENT_CLASSES.green}
         value={onlineNodes}
         label="Active Nodes"
         subtitle={`${operationalPct}% operational`}
@@ -63,7 +55,7 @@ export function StatCardStrip({
 
       <StatCard
         icon={<AlertTriangle />}
-        gradient={GRADIENT_RED}
+        iconClassName={STAT_CARD_ICON_GRADIENT_CLASSES.red}
         value={alertCount}
         label="Alerts"
         subtitle={`${criticalAlertCount} critical`}
@@ -71,7 +63,7 @@ export function StatCardStrip({
 
       <StatCard
         icon={<MapPin />}
-        gradient={GRADIENT_BLUE}
+        iconClassName={STAT_CARD_ICON_GRADIENT_CLASSES.blueFade}
         value="~45,000 km²"
         label="Coverage Area"
         subtitle="Uptime: 99.2%"

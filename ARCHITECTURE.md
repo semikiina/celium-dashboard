@@ -69,13 +69,16 @@ celium-dashboard/
 │       │   └── PageWrapper.tsx
 │       │
 │       ├── overview/
-│       │   ├── AlertBanner.tsx     # Sticky critical-alert banner shown at top of Overview page
-│       │   ├── KpiCard.tsx         # Single KPI tile with colour-coded state accent
-│       │   ├── KpiStrip.tsx        # Horizontal row of 4 KpiCards for overview metrics
-│       │   ├── OverviewContent.tsx # Client component shell for all interactive overview content
-│       │   ├── StatCard.tsx        # Single KPI tile (nodes active, alerts, etc.)
-│       │   ├── TriageNodeList.tsx  # Priority-sorted node list surfacing offline/warning nodes first
-│       │   └── NetworkHealthBar.tsx
+│       │   ├── AlertBanner.tsx     # Critical-alert banner (shadcn Alert + CRITICAL_BANNER_STYLES)
+│       │   ├── StatCardStrip.tsx   # Row of 4 StatCards — **active** top metrics on Overview (`OverviewContent`)
+│       │   ├── StatCard.tsx        # Single large metric tile (gradient icon, value, subtitle)
+│       │   ├── KpiCard.tsx         # Compact KPI tile (left border accent); used by KpiStrip only
+│       │   ├── KpiStrip.tsx        # Row of 4 KpiCards — **not** wired by current Overview; kept for reuse
+│       │   ├── OverviewContent.tsx # Client shell: banner, StatCardStrip, health, alerts, activity
+│       │   ├── NetworkHealthBar.tsx
+│       │   ├── RecentAlerts.tsx
+│       │   ├── RecentNodeActivity.tsx
+│       │   └── TriageNodeList.tsx  # Priority-sorted node list surfacing offline/warning nodes first
 │       │
 │       ├── nodes/
 │       │   ├── NodeFilterBar.tsx   # Search input + status filter button group (controlled)

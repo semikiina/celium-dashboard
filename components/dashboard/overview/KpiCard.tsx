@@ -12,16 +12,7 @@
 
 import { type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
-
-const STATE_STYLES: Record<
-  NonNullable<KpiCardProps['state']>,
-  { value: string; border: string }
-> = {
-  green: { value: 'text-emerald-400', border: 'border-l-4 border-l-emerald-400' },
-  amber: { value: 'text-amber-400', border: 'border-l-4 border-l-amber-400' },
-  red: { value: 'text-red-400', border: 'border-l-4 border-l-red-400' },
-  neutral: { value: 'text-foreground', border: '' },
-};
+import { Card, CardContent } from '@/components/ui/card';
 
 interface KpiCardProps {
   label: string;
@@ -30,6 +21,22 @@ interface KpiCardProps {
   icon?: ReactNode;
   className?: string;
 }
+
+const STATE_STYLES: Record<
+  NonNullable<KpiCardProps['state']>,
+  { value: string; border: string }
+> = {
+  green: {
+    value: 'text-emerald-400',
+    border: 'border-l-4 border-l-emerald-400',
+  },
+  amber: {
+    value: 'text-amber-400',
+    border: 'border-l-4 border-l-amber-400',
+  },
+  red: { value: 'text-red-400', border: 'border-l-4 border-l-red-400' },
+  neutral: { value: 'text-foreground', border: '' },
+};
 
 export function KpiCard({
   label,
@@ -41,23 +48,29 @@ export function KpiCard({
   const styles = STATE_STYLES[state];
 
   return (
-    <div
+    <Card
       className={cn(
-        'rounded-lg border border-border bg-card p-4',
+        'gap-0 rounded-lg border border-border py-0 shadow-none ring-0',
         styles.border,
         className,
       )}
     >
-      <div className="flex items-center gap-2">
-        {icon && (
-          <span className="shrink-0 text-muted-foreground [&>svg]:size-4">{icon}</span>
-        )}
-        <span className="font-body text-sm font-medium text-muted-foreground">{label}</span>
-      </div>
+      <CardContent className="p-4">
+        <div className="flex items-center gap-2">
+          {icon && (
+            <span className="shrink-0 text-muted-foreground [&>svg]:size-4">
+              {icon}
+            </span>
+          )}
+          <span className="font-body text-sm font-medium text-muted-foreground">
+            {label}
+          </span>
+        </div>
 
-      <p className={cn('mt-1 font-heading text-3xl font-bold', styles.value)}>
-        {value}
-      </p>
-    </div>
+        <p className={cn('mt-1 font-heading text-3xl font-bold', styles.value)}>
+          {value}
+        </p>
+      </CardContent>
+    </Card>
   );
 }

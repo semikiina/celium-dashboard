@@ -3,9 +3,8 @@
 /**
  * NodeFilterBar
  * Controlled filter bar for the Nodes page. Renders a search input with label,
- * a Status dropdown, and a Type dropdown inside a card-styled container.
- * A summary line ("Showing X of Y nodes") is displayed below the inputs,
- * separated by a thin blue-tinted border.
+ * Status and Type shadcn Selects inside a Card. A summary line ("Showing X of Y nodes")
+ * is displayed below the inputs, separated by a Separator.
  *
  * All state is managed by the parent; this component is purely presentational.
  *
@@ -19,42 +18,47 @@
  * @prop filteredCount       — node count after filtering
  */
 
-import { Search, ChevronDown } from 'lucide-react';
+import { Search } from 'lucide-react';
+import type { NodeListStatusFilter, NodeListTypeFilter } from '@/types';
+import { NODE_TYPE_DISPLAY } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-
-type StatusFilterValue = 'all' | 'online' | 'offline' | 'warning';
-type TypeFilterValue = 'all' | 'gateway' | 'relay' | 'end_node';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 
 interface NodeFilterBarProps {
   search: string;
   onSearchChange: (value: string) => void;
-  statusFilter: StatusFilterValue;
-  onStatusFilterChange: (value: StatusFilterValue) => void;
-  typeFilter: TypeFilterValue;
-  onTypeFilterChange: (value: TypeFilterValue) => void;
+  statusFilter: NodeListStatusFilter;
+  onStatusFilterChange: (value: NodeListStatusFilter) => void;
+  typeFilter: NodeListTypeFilter;
+  onTypeFilterChange: (value: NodeListTypeFilter) => void;
   totalCount: number;
   filteredCount: number;
 }
 
-const STATUS_OPTIONS: { label: string; value: StatusFilterValue }[] = [
+const STATUS_OPTIONS: { label: string; value: NodeListStatusFilter }[] = [
   { label: 'All Statuses', value: 'all' },
   { label: 'Online', value: 'online' },
   { label: 'Offline', value: 'offline' },
   { label: 'Warning', value: 'warning' },
 ];
 
-const TYPE_OPTIONS: { label: string; value: TypeFilterValue }[] = [
+const TYPE_OPTIONS: { label: string; value: NodeListTypeFilter }[] = [
   { label: 'All Types', value: 'all' },
-  { label: 'Gateway', value: 'gateway' },
-  { label: 'Repeater', value: 'relay' },
-  { label: 'End Node', value: 'end_node' },
+  { label: NODE_TYPE_DISPLAY.gateway, value: 'gateway' },
+  { label: NODE_TYPE_DISPLAY.relay, value: 'relay' },
+  { label: NODE_TYPE_DISPLAY.end_node, value: 'end_node' },
 ];
-
-const selectClass = cn(
-  'w-full appearance-none rounded-[10px] border border-border bg-muted',
-  'py-2.5 pl-4 pr-10 font-body text-sm text-foreground',
-  'focus-visible:border-ring focus:outline-none',
-);
 
 export function NodeFilterBar({
   search,
@@ -67,82 +71,102 @@ export function NodeFilterBar({
   filteredCount,
 }: NodeFilterBarProps) {
   return (
-    <div className="bg-background rounded-[14px] border border-border">
-      <div className="flex gap-4 px-6 pt-6">
-        {/* Search */}
-        <div className="flex flex-1 flex-col gap-2">
-          <label className="font-body text-sm font-medium text-muted-foreground">
-            Search
-          </label>
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search by name or ID..."
-              className={cn(
-                'w-full rounded-[10px] border border-border bg-muted',
-                'py-2.5 pl-10 pr-4 font-body text-sm text-foreground placeholder:text-muted-foreground',
-                'focus-visible:border-ring focus:outline-none',
-              )}
-            />
+    <Card className="gap-0 rounded-[14px] border border-border bg-background py-0 shadow-none ring-0">
+      <CardContent className="flex flex-col gap-0 p-0">
+        <div className="flex gap-4 px-6 pt-6">
+          <div className="flex flex-1 flex-col gap-2">
+            <Label
+              htmlFor="nodes-search"
+              className="font-body text-sm font-medium text-muted-foreground"
+            >
+              Search
+            </Label>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                id="nodes-search"
+                type="text"
+                value={search}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder="Search by name or ID..."
+                className={cn(
+                  'h-auto min-h-0 rounded-[10px] border-border bg-muted py-2.5 pl-10 pr-4 font-body text-sm',
+                )}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Status dropdown */}
-        <div className="flex w-[178px] shrink-0 flex-col gap-2">
-          <label className="font-body text-sm font-medium text-muted-foreground">
-            Status
-          </label>
-          <div className="relative">
-            <select
+          <div className="flex w-[178px] shrink-0 flex-col gap-2">
+            <Label
+              htmlFor="nodes-status-filter"
+              className="font-body text-sm font-medium text-muted-foreground"
+            >
+              Status
+            </Label>
+            <Select
               value={statusFilter}
-              onChange={(e) =>
-                onStatusFilterChange(e.target.value as StatusFilterValue)
+              onValueChange={(v) =>
+                onStatusFilterChange(v as NodeListStatusFilter)
               }
-              className={selectClass}
             >
-              {STATUS_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <SelectTrigger
+                id="nodes-status-filter"
+                className="h-auto w-full min-w-0 rounded-[10px] border-border bg-muted px-4 py-2.5 font-body text-sm"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {STATUS_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
-        </div>
 
-        {/* Type dropdown */}
-        <div className="flex w-[178px] shrink-0 flex-col gap-2">
-          <label className="font-body text-sm font-medium text-muted-foreground">
-            Type
-          </label>
-          <div className="relative">
-            <select
+          <div className="flex w-[178px] shrink-0 flex-col gap-2">
+            <Label
+              htmlFor="nodes-type-filter"
+              className="font-body text-sm font-medium text-muted-foreground"
+            >
+              Type
+            </Label>
+            <Select
               value={typeFilter}
-              onChange={(e) =>
-                onTypeFilterChange(e.target.value as TypeFilterValue)
+              onValueChange={(v) =>
+                onTypeFilterChange(v as NodeListTypeFilter)
               }
-              className={selectClass}
             >
-              {TYPE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <SelectTrigger
+                id="nodes-type-filter"
+                className="h-auto w-full min-w-0 rounded-[10px] border-border bg-muted px-4 py-2.5 font-body text-sm"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {TYPE_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
-      </div>
 
-      {/* Summary line */}
-      <div className="border-border mx-6 mt-4 border-t py-2.5">
-        <p className="font-body text-sm text-muted-foreground">
-          Showing {filteredCount} of {totalCount} nodes
-        </p>
-      </div>
-    </div>
+        <Separator className="mx-6 mt-4 bg-border" />
+
+        <div className="px-6 py-2.5">
+          <p className="font-body text-sm text-muted-foreground">
+            Showing {filteredCount} of {totalCount} nodes
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

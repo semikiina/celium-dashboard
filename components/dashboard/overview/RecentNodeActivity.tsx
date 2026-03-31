@@ -14,19 +14,19 @@
 import Link from 'next/link';
 import { Battery, Signal } from 'lucide-react';
 import { Node, Reading } from '@/types';
-import { STATUS_COLOURS } from '@/lib/constants';
+import { Button } from '@/components/ui/button';
+import { NodeStatusBadge } from '@/components/dashboard/nodes/NodeStatusBadge';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 interface RecentNodeActivityProps {
   nodes: Node[];
   latestReadings: Record<string, Reading>;
 }
-
-const STATUS_LABEL: Record<string, string> = {
-  online: 'active',
-  offline: 'offline',
-  warning: 'warning',
-  unknown: 'unknown',
-};
 
 export function RecentNodeActivity({
   nodes,
@@ -42,67 +42,63 @@ export function RecentNodeActivity({
     .slice(0, 6);
 
   return (
-    <div className="bg-background rounded-xl border border-border p-6">
-      <div className="flex items-center justify-between">
-        <h2 className="font-heading text-xl font-bold text-foreground">
+    <Card className="gap-0 rounded-xl border border-border bg-background py-0 shadow-none ring-0">
+      <CardHeader className="flex flex-row items-center justify-between gap-2 px-6 pb-0 pt-6">
+        <CardTitle className="font-heading text-xl font-bold text-foreground">
           Recent Node Activity
-        </h2>
-        <Link
-          href="/nodes"
-          className="font-body text-primary text-sm transition-colors hover:text-primary/80"
-        >
-          View all nodes &rarr;
-        </Link>
-      </div>
+        </CardTitle>
+        <Button variant="link" asChild className="h-auto p-0 font-body text-sm text-primary">
+          <Link href="/nodes">View all nodes &rarr;</Link>
+        </Button>
+      </CardHeader>
+      <CardContent className="px-6 pb-6 pt-4">
+        <div className="grid grid-cols-3 gap-4">
+          {recentNodes.map((node) => {
+            const reading = latestReadings[node.id];
+            const batteryPct = reading?.batteryPct ?? node.batteryPct;
+            const rssi = reading?.rssi ?? null;
+            const externalId = `NODE-${String(node.externalId).padStart(3, '0')}`;
 
-      <div className="mt-4 grid grid-cols-3 gap-4">
-        {recentNodes.map((node) => {
-          const reading = latestReadings[node.id];
-          const batteryPct = reading?.batteryPct ?? node.batteryPct;
-          const rssi = reading?.rssi ?? null;
-          const externalId = `NODE-${String(node.externalId).padStart(3, '0')}`;
-
-          return (
-            <Link
-              key={node.id}
-              href={`/nodes/${node.id}`}
-              className="bg-muted rounded-[10px] border border-border/50 p-4 transition-colors hover:border-primary/30"
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-body text-base font-medium text-foreground">
-                  {node.name}
-                </span>
-                <span
-                  className={`rounded-full px-2 py-0.5 font-body text-xs font-medium ${STATUS_COLOURS[node.status]}`}
-                >
-                  {STATUS_LABEL[node.status]}
-                </span>
-              </div>
-              <p className="mt-1 font-body text-xs text-muted-foreground">
-                {externalId}
-              </p>
-              <div className="mt-3 flex items-center gap-4">
-                {batteryPct !== null && batteryPct !== undefined && (
-                  <div className="flex items-center gap-1">
-                    <Battery className="size-3 text-muted-foreground" />
-                    <span className="font-body text-xs text-muted-foreground">
-                      {batteryPct}%
-                    </span>
+            return (
+              <Link
+                key={node.id}
+                href={`/nodes/${node.id}`}
+                className="bg-muted rounded-[10px] border border-border/50 p-4 transition-colors hover:border-primary/30"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-body text-base font-medium text-foreground">
+                    {node.name}
+                  </span>
+                  <div className="shrink-0">
+                    <NodeStatusBadge status={node.status} />
                   </div>
-                )}
-                {rssi !== null && (
-                  <div className="flex items-center gap-1">
-                    <Signal className="size-3 text-muted-foreground" />
-                    <span className="font-body text-xs text-muted-foreground">
-                      {rssi} dBm
-                    </span>
-                  </div>
-                )}
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-    </div>
+                </div>
+                <p className="mt-1 font-body text-xs text-muted-foreground">
+                  {externalId}
+                </p>
+                <div className="mt-3 flex items-center gap-4">
+                  {batteryPct !== null && batteryPct !== undefined && (
+                    <div className="flex items-center gap-1">
+                      <Battery className="size-3 text-muted-foreground" />
+                      <span className="font-body text-xs text-muted-foreground">
+                        {batteryPct}%
+                      </span>
+                    </div>
+                  )}
+                  {rssi !== null && (
+                    <div className="flex items-center gap-1">
+                      <Signal className="size-3 text-muted-foreground" />
+                      <span className="font-body text-xs text-muted-foreground">
+                        {rssi} dBm
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

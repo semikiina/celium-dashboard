@@ -5,19 +5,20 @@
  * a label, and a secondary subtitle line. Matches the Figma design
  * with semantic background and subtle border.
  *
- * @prop icon      — React node (lucide-react icon) displayed in the gradient circle
- * @prop gradient  — CSS gradient string for the icon circle background
- * @prop value     — primary metric displayed large (e.g. "12", "~45,000 km²")
- * @prop label     — metric name below the value (e.g. "Total Nodes")
- * @prop subtitle  — secondary description (e.g. "9 active, 1 offline")
+ * @prop icon            — React node (lucide-react icon) displayed in the gradient circle
+ * @prop iconClassName   — Tailwind classes for the icon circle background (e.g. arbitrary gradient)
+ * @prop value           — primary metric displayed large (e.g. "12", "~45,000 km²")
+ * @prop label           — metric name below the value (e.g. "Total Nodes")
+ * @prop subtitle        — secondary description (e.g. "9 active, 1 offline")
  */
 
 import { type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface StatCardProps {
   icon: ReactNode;
-  gradient: string;
+  iconClassName: string;
   value: string | number;
   label: string;
   subtitle: string;
@@ -26,33 +27,37 @@ interface StatCardProps {
 
 export function StatCard({
   icon,
-  gradient,
+  iconClassName,
   value,
   label,
   subtitle,
   className,
 }: StatCardProps) {
   return (
-    <div
+    <Card
       className={cn(
-        'bg-background rounded-xl border border-border p-6',
+        'gap-0 rounded-xl border border-border bg-background py-0 shadow-none ring-0',
         className,
       )}
     >
-      <div
-        className="flex size-12 items-center justify-center rounded-[10px] text-white shadow-lg [&>svg]:size-6"
-        style={{ backgroundImage: gradient }}
-      >
-        {icon}
-      </div>
+      <CardContent className="p-6">
+        <div
+          className={cn(
+            'flex size-12 items-center justify-center rounded-[10px] text-white shadow-lg [&>svg]:size-6',
+            iconClassName,
+          )}
+        >
+          {icon}
+        </div>
 
-      <p className="mt-4 font-heading text-2xl font-bold text-foreground">
-        {value}
-      </p>
+        <p className="mt-4 font-heading text-2xl font-bold text-foreground">
+          {value}
+        </p>
 
-      <p className="mt-1 font-body text-sm text-muted-foreground">{label}</p>
+        <p className="mt-1 font-body text-sm text-muted-foreground">{label}</p>
 
-      <p className="text-primary mt-1 font-body text-xs">{subtitle}</p>
-    </div>
+        <p className="text-primary mt-1 font-body text-xs">{subtitle}</p>
+      </CardContent>
+    </Card>
   );
 }

@@ -63,16 +63,51 @@ export const ALERT_SEVERITY_VALUES = {
 } as const;
 
 /**
- * Tailwind classes for the critical-alert banner on the Overview page.
- * Separated from ALERT_SEVERITY_COLOURS because the banner has multiple
- * styled regions (container, icon, text, link) rather than a single badge.
+ * Tailwind classes for the critical-alert banner on the Overview page
+ * (shadcn Alert + Figma gradient treatment). Use with {@link AlertBanner}.
  */
 export const CRITICAL_BANNER_STYLES = {
-  container: 'bg-red-900/80 backdrop-blur-sm',
-  icon: 'text-red-400',
-  text: 'text-red-100',
-  link: 'text-red-300 hover:text-red-100',
+  alert:
+    'rounded-xl border border-red-500/50 bg-gradient-to-r from-red-500/20 to-red-600/20 px-5 py-4 shadow-none ring-0 [&>svg]:size-6 [&>svg]:text-red-400',
+  title: 'font-body text-base font-medium text-foreground',
+  link: 'font-body text-sm text-destructive underline transition-colors hover:text-destructive/80',
 } as const;
+
+/**
+ * Tailwind `bg-*` classes for table/triage battery level bars (fill segment).
+ */
+export const BATTERY_BAR_FILL_COLOURS = {
+  good: 'bg-green-500',
+  medium: 'bg-amber-500',
+  critical: 'bg-red-500',
+} as const;
+
+/**
+ * Returns the battery bar fill class for a percentage (0–100).
+ */
+export function getBatteryBarFillClass(pct: number): string {
+  if (pct >= 50) return BATTERY_BAR_FILL_COLOURS.good;
+  if (pct >= 20) return BATTERY_BAR_FILL_COLOURS.medium;
+  return BATTERY_BAR_FILL_COLOURS.critical;
+}
+
+/**
+ * Stat-card icon tile backgrounds (Tailwind arbitrary gradients).
+ * Cyan/blue hex values match {@link CHART_COLOURS}; green/red are overview-only accents.
+ */
+export const STAT_CARD_ICON_GRADIENT_CLASSES = {
+  cyanBlue: 'bg-[linear-gradient(135deg,#5DD4D8,#1784E3)]',
+  green: 'bg-[linear-gradient(135deg,#00BC7D,#009966)]',
+  red: 'bg-[linear-gradient(135deg,#FB2C36,#E7000B)]',
+  blueFade: 'bg-[linear-gradient(135deg,#1784E3,rgba(23,132,227,0.7))]',
+} as const;
+
+/**
+ * Horizontal brand gradient for network-health (and similar) progress fills.
+ * Hex values match {@link CHART_COLOURS} blue → cyan.
+ */
+export const NETWORK_HEALTH_BAR_FILL_CLASS =
+  'bg-[linear-gradient(90deg,#1784E3,#5DD4D8)]' as const;
 
 /**
  * Hex values for Recharts chart lines. Recharts requires raw hex strings

@@ -16,10 +16,12 @@ import {
   type SortColumn,
   type SortDir,
 } from '@/components/dashboard/nodes/NodeTable';
-import { Node, NodeType, Reading } from '@/types';
-
-type StatusFilterValue = 'all' | 'online' | 'offline' | 'warning';
-type TypeFilterValue = 'all' | NodeType;
+import {
+  Node,
+  Reading,
+  type NodeListStatusFilter,
+  type NodeListTypeFilter,
+} from '@/types';
 
 type NodeWithReading = Node & { latestReading: Reading | null };
 
@@ -66,8 +68,9 @@ function compareNodes(
 export default function NodesPage() {
   const { nodes, isLoading } = useNodes();
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<StatusFilterValue>('all');
-  const [typeFilter, setTypeFilter] = useState<TypeFilterValue>('all');
+  const [statusFilter, setStatusFilter] =
+    useState<NodeListStatusFilter>('all');
+  const [typeFilter, setTypeFilter] = useState<NodeListTypeFilter>('all');
   const [sortColumn, setSortColumn] = useState<SortColumn>('name');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
 

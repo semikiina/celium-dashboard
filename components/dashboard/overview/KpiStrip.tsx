@@ -1,8 +1,9 @@
 /**
  * KpiStrip
  * Renders a horizontal row of 4 KpiCard components displaying key network
- * metrics on the Overview page. Receives pre-computed values as props —
- * contains no data fetching logic.
+ * metrics. Not wired by the current Overview route — `OverviewContent` uses
+ * `StatCardStrip` for the top metric row instead. Kept for reuse or alternate
+ * overview layouts.
  *
  * @prop nodesOnline    — count of nodes currently online
  * @prop messagesToday  — count of readings received across all nodes in the current UTC day

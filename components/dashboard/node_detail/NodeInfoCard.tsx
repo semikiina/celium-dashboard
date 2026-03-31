@@ -12,6 +12,7 @@
  * @prop externalId  — hardware-assigned node ID
  */
 
+import type { ReactNode } from 'react';
 import {
   Cpu,
   MapPin,
@@ -21,6 +22,13 @@ import {
   Layers,
 } from 'lucide-react';
 import { formatRelativeTime, formatCoordinates } from '@/lib/utils';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 interface NodeInfoCardProps {
   firmwareVer: string | null;
@@ -37,18 +45,20 @@ function InfoRow({
   label,
   value,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   value: string;
 }) {
   return (
     <div className="flex items-start gap-3 py-3">
-      <span className="mt-0.5 shrink-0 text-zinc-500 [&>svg]:size-4">
+      <span className="mt-0.5 shrink-0 text-muted-foreground [&>svg]:size-4">
         {icon}
       </span>
       <div className="min-w-0">
-        <p className="font-body text-xs font-medium text-zinc-500">{label}</p>
-        <p className="font-body text-sm text-zinc-200">{value}</p>
+        <p className="font-body text-xs font-medium text-muted-foreground">
+          {label}
+        </p>
+        <p className="font-body text-sm text-foreground">{value}</p>
       </div>
     </div>
   );
@@ -64,32 +74,37 @@ export function NodeInfoCard({
   externalId,
 }: NodeInfoCardProps) {
   return (
-    <div className="rounded-xl border border-zinc-700 bg-zinc-900 p-6">
-      <h2 className="font-heading text-lg font-semibold text-zinc-100">
-        Node Information
-      </h2>
-
-      <div className="mt-3 divide-y divide-zinc-800">
+    <Card className="gap-0 rounded-xl border border-border bg-card py-0 shadow-none ring-0">
+      <CardHeader className="px-6 pb-0 pt-6">
+        <CardTitle className="font-heading text-lg font-semibold text-foreground">
+          Node Information
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col px-6 pb-6 pt-3">
         <InfoRow
           icon={<Hash />}
           label="External ID"
           value={`NODE-${String(externalId).padStart(3, '0')}`}
         />
+        <Separator />
         <InfoRow
           icon={<Cpu />}
           label="Firmware"
           value={firmwareVer ?? '—'}
         />
+        <Separator />
         <InfoRow
           icon={<Layers />}
           label="Hardware"
           value={hardwareVer ?? '—'}
         />
+        <Separator />
         <InfoRow
           icon={<MapPin />}
           label="Location"
           value={formatCoordinates(lat, lng)}
         />
+        <Separator />
         <InfoRow
           icon={<Calendar />}
           label="Deployed"
@@ -103,12 +118,13 @@ export function NodeInfoCard({
               : '—'
           }
         />
+        <Separator />
         <InfoRow
           icon={<Clock />}
           label="Last Seen"
           value={formatRelativeTime(lastSeenAt)}
         />
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
