@@ -4,9 +4,9 @@
  * Used in the triage node list and anywhere nodes need priority ordering.
  */
 
-import { Node } from '@/types';
+import { Node } from "@/types"
 
-const LOW_BATTERY_THRESHOLD = 20;
+const LOW_BATTERY_THRESHOLD = 20
 
 /**
  * sortNodesByUrgency
@@ -28,19 +28,19 @@ const LOW_BATTERY_THRESHOLD = 20;
  */
 export function sortNodesByUrgency(nodes: Node[]): Node[] {
   return [...nodes].sort((a, b) => {
-    const urgencyA = getUrgencyRank(a);
-    const urgencyB = getUrgencyRank(b);
+    const urgencyA = getUrgencyRank(a)
+    const urgencyB = getUrgencyRank(b)
 
     if (urgencyA !== urgencyB) {
-      return urgencyA - urgencyB;
+      return urgencyA - urgencyB
     }
 
-    return compareLastSeen(a.lastSeenAt, b.lastSeenAt);
-  });
+    return compareLastSeen(a.lastSeenAt, b.lastSeenAt)
+  })
 }
 
 function isLowBattery(node: Node): boolean {
-  return node.batteryPct !== null && node.batteryPct < LOW_BATTERY_THRESHOLD;
+  return node.batteryPct !== null && node.batteryPct < LOW_BATTERY_THRESHOLD
 }
 
 /**
@@ -49,14 +49,14 @@ function isLowBattery(node: Node): boolean {
  */
 function getUrgencyRank(node: Node): number {
   switch (node.status) {
-    case 'offline':
-      return 0;
-    case 'warning':
-      return isLowBattery(node) ? 1 : 2;
-    case 'online':
-      return isLowBattery(node) ? 3 : 4;
-    case 'unknown':
-      return 5;
+    case "offline":
+      return 0
+    case "warning":
+      return isLowBattery(node) ? 1 : 2
+    case "online":
+      return isLowBattery(node) ? 3 : 4
+    case "unknown":
+      return 5
   }
 }
 
@@ -65,8 +65,8 @@ function getUrgencyRank(node: Node): number {
  * Null values sort before non-null (never-seen = most urgent).
  */
 function compareLastSeen(a: string | null, b: string | null): number {
-  if (a === null && b === null) return 0;
-  if (a === null) return -1;
-  if (b === null) return 1;
-  return a.localeCompare(b);
+  if (a === null && b === null) return 0
+  if (a === null) return -1
+  if (b === null) return 1
+  return a.localeCompare(b)
 }

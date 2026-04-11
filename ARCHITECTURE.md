@@ -127,7 +127,8 @@ celium-dashboard/
 │   └── index.ts                    # All shared TypeScript interfaces (see below)
 │
 └── scripts/
-    └── seed.ts                     # Populates DB with mock data (run once)
+    ├── seed.ts                     # Populates DB with mock data (run once)
+    └── simulate-readings.ts        # Local process: append synthetic readings every N ms (`npm run simulate:readings`) - Needs to have a `SUPABASE_SERVICE_ROLE_KEY` in your local `.env.local` to bypass RLS.
 ```
 
 ---
@@ -403,7 +404,7 @@ Never use a raster version of the logo. Never recolour SVGs inline — use the c
 
 - **Server Components** (static or infrequently updated data): call Supabase directly using the server client. No API route needed.
 - **Client Components** (charts, map, explorer): use SWR hooks that call Next.js API routes. API routes use the Supabase server client.
-- **Polling**: SWR `refreshInterval` set to 30 seconds for overview and alerts pages to simulate near-real-time updates.
+- **Polling**: SWR `refreshInterval` uses `REFRESH_INTERVAL` (30s) for alerts and network stats. Hooks that surface latest telemetry (`useNodes`, `useNode`, `useReadings`, and `/api/nodes` inside `useOverviewData`) use `READINGS_REFRESH_INTERVAL` (5s) so the UI tracks the local readings simulator without a full reload.
 
 ---
 
