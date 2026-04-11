@@ -3,9 +3,9 @@
  * Returns a single node by its UUID, including the latest reading.
  */
 
-import { createClient } from '@/lib/supabase';
-import { Node, NodeRow, Reading, ReadingRow } from '@/types';
-import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from "@/lib/supabase"
+import { Node, NodeRow, Reading, ReadingRow } from "@/types"
+import { NextRequest, NextResponse } from "next/server"
 
 function mapRowToNode(row: NodeRow): Node {
   return {
@@ -22,7 +22,7 @@ function mapRowToNode(row: NodeRow): Node {
     batteryPct: row.battery_pct,
     deployedAt: row.deployed_at,
     lastSeenAt: row.last_seen_at,
-  };
+  }
 }
 
 function mapRowToReading(row: ReadingRow): Reading {
@@ -41,58 +41,51 @@ function mapRowToReading(row: ReadingRow): Reading {
     hopCount: row.hop_count,
     seqNum: row.seq_num,
     rawPayload: row.raw_payload,
-  };
+  }
 }
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
+  const { id } = await params
 
   if (!id) {
-    return NextResponse.json({ error: 'Missing node id' }, { status: 400 });
+    return NextResponse.json({ error: "Missing node id" }, { status: 400 })
   }
 
-  const supabase = createClient();
+  const supabase = createClient()
 
   const [nodeResult, readingResult] = await Promise.all([
+    supabase.from("nodes").select("*").eq("id", id).single<NodeRow>(),
     supabase
-      .from('nodes')
-      .select('*')
-      .eq('id', id)
-      .single<NodeRow>(),
-    supabase
-      .from('readings')
-      .select('*')
-      .eq('node_id', id)
-      .order('timestamp', { ascending: false })
+      .from("readings")
+      .select("*")
+      .eq("node_id", id)
+      .order("timestamp", { ascending: false })
       .limit(1)
       .returns<ReadingRow[]>(),
-  ]);
+  ])
 
   if (nodeResult.error) {
-    const status = nodeResult.error.code === 'PGRST116' ? 404 : 500;
-    return NextResponse.json(
-      { error: nodeResult.error.message },
-      { status },
-    );
+    const status = nodeResult.error.code === "PGRST116" ? 404 : 500
+    return NextResponse.json({ error: nodeResult.error.message }, { status })
   }
 
   if (readingResult.error) {
     return NextResponse.json(
       { error: readingResult.error.message },
-      { status: 500 },
-    );
+      { status: 500 }
+    )
   }
 
   const latestReading =
     readingResult.data && readingResult.data.length > 0
       ? mapRowToReading(readingResult.data[0])
-      : null;
+      : null
 
   return NextResponse.json({
     ...mapRowToNode(nodeResult.data),
     latestReading,
-  });
+  })
 }

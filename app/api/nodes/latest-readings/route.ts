@@ -8,9 +8,9 @@
  * This is acceptable for MVP data volumes.
  */
 
-import { createClient } from '@/lib/supabase';
-import { Reading, ReadingRow } from '@/types';
-import { NextResponse } from 'next/server';
+import { createClient } from "@/lib/supabase"
+import { Reading, ReadingRow } from "@/types"
+import { NextResponse } from "next/server"
 
 function mapRowToReading(row: ReadingRow): Reading {
   return {
@@ -28,31 +28,31 @@ function mapRowToReading(row: ReadingRow): Reading {
     hopCount: row.hop_count,
     seqNum: row.seq_num,
     rawPayload: row.raw_payload,
-  };
+  }
 }
 
 export async function GET() {
-  const supabase = createClient();
+  const supabase = createClient()
 
   const { data, error } = await supabase
-    .from('readings')
-    .select('*')
-    .order('node_id', { ascending: true })
-    .order('timestamp', { ascending: false })
-    .returns<ReadingRow[]>();
+    .from("readings")
+    .select("*")
+    .order("node_id", { ascending: true })
+    .order("timestamp", { ascending: false })
+    .returns<ReadingRow[]>()
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const seen = new Set<string>();
-  const latest: Reading[] = [];
+  const seen = new Set<string>()
+  const latest: Reading[] = []
 
   for (const row of data ?? []) {
-    if (seen.has(row.node_id)) continue;
-    seen.add(row.node_id);
-    latest.push(mapRowToReading(row));
+    if (seen.has(row.node_id)) continue
+    seen.add(row.node_id)
+    latest.push(mapRowToReading(row))
   }
 
-  return NextResponse.json(latest);
+  return NextResponse.json(latest)
 }

@@ -8,34 +8,34 @@
 import {
   createClient as createSupabaseClient,
   type SupabaseClient,
-} from '@supabase/supabase-js';
+} from "@supabase/supabase-js"
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 if (!supabaseUrl) {
   throw new Error(
-    'Missing NEXT_PUBLIC_SUPABASE_URL. Set it in your environment (e.g. .env.local).',
-  );
+    "Missing NEXT_PUBLIC_SUPABASE_URL. Set it in your environment (e.g. .env.local)."
+  )
 }
 
 if (!supabaseAnonKey) {
   throw new Error(
-    'Missing NEXT_PUBLIC_SUPABASE_ANON_KEY. Set it in your environment (e.g. .env.local).',
-  );
+    "Missing NEXT_PUBLIC_SUPABASE_ANON_KEY. Set it in your environment (e.g. .env.local)."
+  )
 }
 
 const supabase: SupabaseClient = createSupabaseClient(
   supabaseUrl,
-  supabaseAnonKey,
-);
+  supabaseAnonKey
+)
 
 /**
  * createClient
  * Returns the shared Supabase client singleton used across the app.
  */
 export function createClient(): SupabaseClient {
-  return supabase;
+  return supabase
 }
 
 /**
@@ -43,5 +43,5 @@ export function createClient(): SupabaseClient {
  * Creates a dedicated Supabase client for one-off scripts with explicit credentials.
  */
 export function createScriptClient(url: string, key: string): SupabaseClient {
-  return createSupabaseClient(url, key);
+  return createSupabaseClient(url, key)
 }

@@ -7,9 +7,9 @@
  * `readings` per node (DISTINCT ON emulated in JS) and merges them.
  */
 
-import { createClient } from '@/lib/supabase';
-import { Node, NodeRow, Reading, ReadingRow } from '@/types';
-import { NextResponse } from 'next/server';
+import { createClient } from "@/lib/supabase"
+import { Node, NodeRow, Reading, ReadingRow } from "@/types"
+import { NextResponse } from "next/server"
 
 function mapRowToNode(row: NodeRow): Node {
   return {
@@ -26,7 +26,7 @@ function mapRowToNode(row: NodeRow): Node {
     batteryPct: row.battery_pct,
     deployedAt: row.deployed_at,
     lastSeenAt: row.last_seen_at,
-  };
+  }
 }
 
 function mapRowToReading(row: ReadingRow): Reading {
@@ -45,51 +45,51 @@ function mapRowToReading(row: ReadingRow): Reading {
     hopCount: row.hop_count,
     seqNum: row.seq_num,
     rawPayload: row.raw_payload,
-  };
+  }
 }
 
 export async function GET() {
-  const supabase = createClient();
+  const supabase = createClient()
 
   const [nodesResult, readingsResult] = await Promise.all([
     supabase
-      .from('nodes')
-      .select('*')
-      .order('created_at', { ascending: false })
+      .from("nodes")
+      .select("*")
+      .order("created_at", { ascending: false })
       .returns<NodeRow[]>(),
     supabase
-      .from('readings')
-      .select('*')
-      .order('node_id', { ascending: true })
-      .order('timestamp', { ascending: false })
+      .from("readings")
+      .select("*")
+      .order("node_id", { ascending: true })
+      .order("timestamp", { ascending: false })
       .returns<ReadingRow[]>(),
-  ]);
+  ])
 
   if (nodesResult.error) {
     return NextResponse.json(
       { error: nodesResult.error.message },
-      { status: 500 },
-    );
+      { status: 500 }
+    )
   }
 
   if (readingsResult.error) {
     return NextResponse.json(
       { error: readingsResult.error.message },
-      { status: 500 },
-    );
+      { status: 500 }
+    )
   }
 
-  const latestByNodeId = new Map<string, Reading>();
+  const latestByNodeId = new Map<string, Reading>()
   for (const row of readingsResult.data ?? []) {
     if (!latestByNodeId.has(row.node_id)) {
-      latestByNodeId.set(row.node_id, mapRowToReading(row));
+      latestByNodeId.set(row.node_id, mapRowToReading(row))
     }
   }
 
   const data = (nodesResult.data ?? []).map((row) => ({
     ...mapRowToNode(row),
     latestReading: latestByNodeId.get(row.id) ?? null,
-  }));
+  }))
 
-  return NextResponse.json(data);
+  return NextResponse.json(data)
 }

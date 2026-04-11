@@ -54,6 +54,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
   useEffect(() => {
     const t = readStoredTheme();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate stored theme after mount (SSR default is dark)
     setThemeState(t);
     applyTheme(t);
   }, []);
