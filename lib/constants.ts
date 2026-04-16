@@ -4,6 +4,11 @@
 
 import { AlertSeverity, NodeStatus, NodeType } from "@/types"
 
+/**
+ * Cookie key for desktop sidebar open/closed state (written by SidebarProvider in `components/ui/sidebar.tsx`).
+ */
+export const SIDEBAR_STATE_COOKIE_NAME = "sidebar_state"
+
 export const NODE_TYPE_LABELS: Record<NodeType, string> = {
   gateway: "C3 — Gateway",
   relay: "C2 — Relay",
@@ -49,6 +54,25 @@ export const REFRESH_INTERVAL = 30000
  * (node list, node detail, readings API). Matches the local simulator default cadence.
  */
 export const READINGS_REFRESH_INTERVAL = 5000
+
+/**
+ * SWR polling for `/api/nodes` (node list + map markers). One minute is enough for aggregate
+ * list/map views; use {@link READINGS_REFRESH_INTERVAL} for live readings on detail pages.
+ */
+export const NODES_LIST_REFRESH_INTERVAL = 60000
+
+/**
+ * Leaflet circle marker stroke/fill (hex) for map nodes — Recharts/Leaflet need raw colours.
+ */
+export const MAP_NODE_MARKER_LEAFLET: Record<
+  NodeStatus,
+  { stroke: string; fill: string }
+> = {
+  online: { stroke: "#22c55e", fill: "#86efac" },
+  warning: { stroke: "#f59e0b", fill: "#fcd34d" },
+  offline: { stroke: "#dc2626", fill: "#fca5a5" },
+  unknown: { stroke: "#64748b", fill: "#cbd5e1" },
+}
 
 export const NODE_TYPE_VALUES = {
   gateway: "gateway",

@@ -3,12 +3,12 @@
 /**
  * useNodes
  * Fetches the full node list with each node's latest reading.
- * Refreshes every 5 seconds via {@link READINGS_REFRESH_INTERVAL} (includes per-node latestReading).
+ * Refreshes every minute via {@link NODES_LIST_REFRESH_INTERVAL}.
  */
 
 import useSWR from "swr"
 import { Node, Reading } from "@/types"
-import { READINGS_REFRESH_INTERVAL } from "@/lib/constants"
+import { NODES_LIST_REFRESH_INTERVAL } from "@/lib/constants"
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
@@ -20,7 +20,7 @@ export function useNodes(): {
   const { data, isLoading, error } = useSWR<
     (Node & { latestReading: Reading | null })[]
   >("/api/nodes", fetcher, {
-    refreshInterval: READINGS_REFRESH_INTERVAL,
+    refreshInterval: NODES_LIST_REFRESH_INTERVAL,
   })
 
   return { nodes: data ?? [], isLoading, error }
