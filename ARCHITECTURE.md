@@ -107,8 +107,8 @@ celium-dashboard/
 │       │   └── ExplorerChart.tsx   # Chart rendered from explorer query
 │       │
 │       └── alerts/
-│           ├── AlertFeed.tsx       # Scrollable alert list
-│           └── AlertItem.tsx       # Single alert row with severity colour
+│           ├── AlertStatCard.tsx   # Alerts page summary metric cards (active / resolved / total)
+│           └── AlertTable.tsx      # Alerts page table (severity, status, message, node, type, time)
 │
 ├── hooks/
 │   ├── useOverviewData.ts          # SWR hook — aggregates all Overview page data (nodes, stats, alerts, latest readings, KPIs)

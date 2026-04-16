@@ -8,6 +8,21 @@ export type NodeStatus = "online" | "offline" | "warning" | "unknown"
 
 export type AlertSeverity = "info" | "warning" | "critical"
 
+/** Alerts page: filter by resolution state. */
+export type AlertResolutionFilter = "all" | "active" | "resolved"
+
+/** Alerts page: severity filter including the literal "all". */
+export type AlertSeverityUiFilter = "all" | AlertSeverity
+
+/** Alerts page: table sort option (applied from the filters sheet). */
+export type AlertSortOption =
+  | "created_desc"
+  | "created_asc"
+  | "severity_desc"
+  | "severity_asc"
+  | "type_asc"
+  | "node_asc"
+
 /**
  * Nodes page status filter. MVP UI omits `unknown` from the dropdown; values
  * still align with {@link NodeStatus} for the non-`all` branch.
